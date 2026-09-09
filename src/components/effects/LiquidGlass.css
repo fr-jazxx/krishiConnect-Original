@@ -1,0 +1,146 @@
+/* =========================================================
+   LIQUID GLASS — HIGH-FIDELITY RESPONSIVE GLASS ENGINE
+   Pure CSS hardware-accelerated glass with specular sheen.
+   Zero canvas resizing distortion, zero muddy artifacts.
+   ========================================================= */
+
+.liquid-glass-wrapper {
+  position: relative;
+  overflow: hidden;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease;
+  will-change: transform;
+}
+
+.liquid-glass-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+/* Interactive specular light sheen */
+.liquid-glass__sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.12),
+    transparent 50%
+  );
+  transition: opacity 0.3s ease;
+}
+
+.liquid-glass-wrapper:hover .liquid-glass__sheen {
+  opacity: 1;
+}
+
+.liquid-glass__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Panel Variant (Used in Dark Hero / Spotlight) ── */
+.liquid-glass--panel {
+  background: linear-gradient(
+    145deg,
+    rgba(26, 68, 48, 0.78) 0%,
+    rgba(14, 38, 27, 0.88) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(110, 231, 183, 0.28);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3),
+    0 16px 36px -6px rgba(0, 0, 0, 0.35),
+    0 0 20px -2px rgba(36, 107, 69, 0.2);
+  color: #ffffff;
+}
+
+.liquid-glass--panel:hover {
+  border-color: rgba(110, 231, 183, 0.45);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35),
+    0 20px 42px -6px rgba(0, 0, 0, 0.45),
+    0 0 28px -2px rgba(36, 107, 69, 0.35);
+}
+
+/* ── Card Variant (Light / Warm Cream Backgrounds) ── */
+.liquid-glass--card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(247, 244, 234, 0.75) 100%
+  );
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 24px -4px rgba(22, 58, 42, 0.08),
+    0 2px 6px -1px rgba(22, 58, 42, 0.04);
+}
+
+.liquid-glass--card:hover {
+  border-color: rgba(36, 107, 69, 0.25);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 30px -4px rgba(22, 58, 42, 0.12);
+}
+
+/* ── Accent Variant (Fresh Agricultural Green) ── */
+.liquid-glass--accent {
+  background: linear-gradient(
+    145deg,
+    rgba(36, 107, 69, 0.85) 0%,
+    rgba(22, 68, 42, 0.92) 100%
+  );
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(167, 243, 208, 0.35);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+    0 12px 28px -4px rgba(36, 107, 69, 0.3);
+  color: #ffffff;
+}
+
+/* ── Gold Variant (Harvest Realization Gain) ── */
+.liquid-glass--gold {
+  background: linear-gradient(
+    145deg,
+    rgba(45, 38, 20, 0.82) 0%,
+    rgba(28, 22, 12, 0.92) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(254, 240, 138, 0.35),
+    0 16px 36px -6px rgba(0, 0, 0, 0.35),
+    0 0 20px -2px rgba(202, 138, 4, 0.25);
+  color: #ffffff;
+}
+
+.liquid-glass--gold:hover {
+  border-color: rgba(250, 204, 21, 0.6);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(254, 240, 138, 0.5),
+    0 20px 40px -6px rgba(0, 0, 0, 0.45),
+    0 0 26px -2px rgba(202, 138, 4, 0.4);
+}
+
+/* Shapes */
+.liquid-glass--pill {
+  border-radius: 9999px !important;
+}
+
+.liquid-glass--circle {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1;
+}

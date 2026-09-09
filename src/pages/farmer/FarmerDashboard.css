@@ -1,0 +1,628 @@
+/* =========================================================
+   FARMER DASHBOARD — STITCH ENTERPRISE STYLING
+   Clean institutional layouts with earth-grounded aesthetics
+   ========================================================= */
+
+.farmer-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── Top Header ── */
+.farmer-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.farmer-dashboard__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(36, 107, 69, 0.12);
+  border: 1px solid rgba(36, 107, 69, 0.25);
+  color: var(--primary-green, #246b45);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--primary-green, #246b45);
+  border-radius: 50%;
+}
+
+.farmer-dashboard__title {
+  font-family: var(--font-heading, 'DM Sans', sans-serif);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--deep-forest, #163a2a);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.farmer-dashboard__subtitle {
+  color: var(--text-muted, #64748b);
+  font-size: 14.5px;
+  max-width: 680px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.farmer-dashboard__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.farmer-voice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--border-medium, #cbd5e1);
+  color: #334155;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.farmer-voice-btn:hover {
+  background: #f8fafc;
+  border-color: var(--primary-green, #246b45);
+  color: var(--primary-green, #246b45);
+}
+
+.farmer-voice-btn--active {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+.farmer-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: var(--primary-green, #246b45);
+  color: #ffffff;
+  text-decoration: none;
+  border: 1px solid #1e5939;
+  box-shadow: 0 4px 12px rgba(36, 107, 69, 0.25);
+  transition: all 0.15s ease;
+}
+
+.farmer-primary-cta:hover {
+  background: #1e5939;
+  transform: translateY(-1px);
+}
+
+/* ── Kisan Quick Actions ── */
+.kisan-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.quick-action-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1.5px solid var(--border-light, #e2e8f0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.quick-action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.quick-action-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-action-card--sell {
+  border-color: rgba(36, 107, 69, 0.25);
+  background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
+}
+.quick-action-card--sell .quick-action-icon {
+  background: rgba(36, 107, 69, 0.12);
+}
+.quick-action-card--sell h4 {
+  color: #166534;
+}
+
+.quick-action-card--truck {
+  border-color: rgba(59, 130, 246, 0.25);
+  background: linear-gradient(145deg, #ffffff 0%, #eff6ff 100%);
+}
+.quick-action-card--truck .quick-action-icon {
+  background: rgba(59, 130, 246, 0.12);
+}
+.quick-action-card--truck h4 {
+  color: #1e40af;
+}
+
+.quick-action-card--money {
+  border-color: rgba(200, 155, 60, 0.3);
+  background: linear-gradient(145deg, #ffffff 0%, #fefce8 100%);
+}
+.quick-action-card--money .quick-action-icon {
+  background: rgba(200, 155, 60, 0.15);
+}
+.quick-action-card--money h4 {
+  color: #854d0e;
+}
+
+.quick-action-text {
+  flex: 1;
+}
+
+.quick-action-text h4 {
+  font-size: 16.5px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+}
+
+.quick-action-text p {
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+  margin: 0;
+  font-weight: 500;
+}
+
+.quick-action-arrow {
+  color: #94a3b8;
+  transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.quick-action-card:hover .quick-action-arrow {
+  transform: translateX(4px);
+  color: var(--primary-green, #246b45);
+}
+
+/* ── Primary 3-Metric Row ── */
+.farmer-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.farmer-metric-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border-light, #e2e8f0);
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.farmer-metric-card.highlight-gold {
+  border-color: rgba(200, 155, 60, 0.4);
+  background: linear-gradient(145deg, #ffffff 0%, #fefce8 100%);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metric-number {
+  font-family: var(--font-heading, 'DM Sans', sans-serif);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--deep-forest, #163a2a);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.metric-unit {
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.metric-sub {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ── Grid Layout: Main & Sidecar ── */
+.farmer-dashboard__grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 24px;
+}
+
+.farmer-dashboard__left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border-light, #e2e8f0);
+  border-radius: 14px;
+  padding: 26px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dashboard-card__header h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 4px 0 0 0;
+}
+
+.market-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Mandi Comparison Box */
+.mandi-comparison-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mandi-stat-line {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.mandi-visual-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.comp-item {
+  padding: 18px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+}
+
+.comp-item--traditional {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.comp-item--traditional .comp-label {
+  color: #991b1b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.comp-item--traditional .comp-price {
+  font-family: var(--font-heading, 'DM Sans', sans-serif);
+  font-size: 26px;
+  font-weight: 800;
+  color: #b91c1c;
+  margin-bottom: 6px;
+}
+
+.comp-item--traditional .comp-note {
+  font-size: 12px;
+  color: #7f1d1d;
+}
+
+.comp-item--krishi {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.comp-item--krishi .comp-label {
+  color: #166534;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.comp-item--krishi .comp-price {
+  font-family: var(--font-heading, 'DM Sans', sans-serif);
+  font-size: 26px;
+  font-weight: 800;
+  color: #166534;
+  margin-bottom: 6px;
+}
+
+.comp-item--krishi .comp-note {
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803d;
+}
+
+/* Confirmed Buyer Deal Card */
+.buyer-deal-card {
+  border-color: rgba(36, 107, 69, 0.3);
+  box-shadow: 0 6px 20px rgba(36, 107, 69, 0.08);
+}
+
+.deal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.deal-header__title h3 {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 6px 0 0 0;
+}
+
+.deal-timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #d97706;
+  background: #fef3c7;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.deal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.deal-buyer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.buyer-avatar-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #163a2a;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verified-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #166534;
+  margin-top: 2px;
+}
+
+.deal-financials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.financial-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.financial-col.highlight {
+  border-left: 1.5px solid #cbd5e1;
+  padding-left: 16px;
+}
+
+.fin-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.fin-val {
+  font-family: var(--font-heading, 'DM Sans', sans-serif);
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.fin-val-large {
+  font-family: var(--font-heading, 'DM Sans', sans-serif);
+  font-size: 24px;
+  font-weight: 800;
+  color: #166534;
+}
+
+.deal-escrow-guarantee {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #166534;
+  font-weight: 500;
+}
+
+.deal-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
+  background: #246b45;
+  color: #ffffff;
+  border: 1px solid #1e5939;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deal-submit-btn:hover {
+  background: #1e5939;
+  transform: translateY(-1px);
+}
+
+/* ── Active Consignments List (Right Sidecar) ── */
+.active-consignments-card {
+  height: fit-content;
+}
+
+.active-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item-compact {
+  background: #fafafa;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s ease;
+}
+
+.order-item-compact:hover {
+  border-color: #94a3b8;
+}
+
+.order-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.order-buyer-tag {
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.order-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 8px;
+}
+
+.order-status-badge {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.order-track-link {
+  font-size: 12px;
+  font-weight: 700;
+  color: #246b45;
+  text-decoration: none;
+}
+
+.order-track-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .farmer-dashboard__grid {
+    grid-template-columns: 1fr;
+  }
+  .farmer-metrics-row {
+    grid-template-columns: 1fr;
+  }
+  .kisan-quick-actions {
+    grid-template-columns: 1fr;
+  }
+}

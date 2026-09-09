@@ -1,0 +1,198 @@
+.payments-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.payment-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.p-metric-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-md, 8px);
+  padding: 20px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.p-metric-label {
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+  font-weight: 500;
+}
+
+.p-metric-val {
+  font-family: var(--font-headline, 'DM Sans', sans-serif);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-dark, #1e293b);
+}
+
+.p-metric-sub {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+
+.bank-info-card {
+  background: var(--bg-cream, #f7f4ea);
+  border-color: rgba(200, 155, 60, 0.3);
+}
+
+.bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bank-icon {
+  color: var(--primary-green, #246b45);
+}
+
+.verified-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.bank-name {
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+  font-size: 14px;
+}
+
+.bank-acct {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+
+/* Escrow Process Card */
+.escrow-process-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-md, 8px);
+  padding: 26px 32px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.escrow-process-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+  margin-bottom: 24px;
+}
+
+.escrow-steps-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.e-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.e-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-green, #246b45);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.e-step h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+}
+
+.e-step p {
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+  line-height: 1.5;
+}
+
+/* Payout Table */
+.payout-table-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-md, 8px);
+  padding: 24px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.payout-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.payout-table-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+}
+
+.payout-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.payout-table th {
+  padding: 12px 14px;
+  background: #f8fafc;
+  color: var(--text-muted, #64748b);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+}
+
+.payout-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+  color: var(--text-dark, #1e293b);
+}
+
+.settled-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
+@media (max-width: 1024px) {
+  .payment-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .escrow-steps-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .payment-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

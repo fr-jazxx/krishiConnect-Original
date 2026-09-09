@@ -1,0 +1,283 @@
+.orders-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Contract Offer Banner */
+.contract-offer-banner {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-left: 5px solid var(--primary-green, #246b45);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+  overflow: hidden;
+}
+
+.contract-offer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+}
+
+.offer-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contract-id {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+}
+
+.offer-expiry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #d97706;
+  font-weight: 600;
+}
+
+.contract-offer-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.buyer-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.buyer-logo {
+  width: 48px;
+  height: 48px;
+  background: var(--deep-forest, #163a2a);
+  color: white;
+  border-radius: var(--radius-sm, 6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.buyer-profile h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+  margin-bottom: 2px;
+}
+
+.buyer-compliance {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+
+.contract-terms-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background: var(--bg-cream, #f7f4ea);
+  border-radius: var(--radius-sm, 6px);
+  padding: 16px 20px;
+}
+
+.term-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.term-label {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+}
+
+.term-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+}
+
+/* Settlement Breakdown */
+.settlement-breakdown {
+  background: #f8fafc;
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-sm, 6px);
+  padding: 18px 20px;
+}
+
+.settlement-breakdown h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+  margin-bottom: 14px;
+}
+
+.settlement-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.s-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-dark, #1e293b);
+}
+
+.s-row--total {
+  border-top: 1px solid var(--border-light, #cbd5e1);
+  padding-top: 10px;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.contract-offer-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+}
+
+.action-button-group {
+  display: flex;
+  gap: 12px;
+}
+
+.accepted-notification {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm, 6px);
+  color: #166534;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+/* Orders Table Card */
+.orders-table-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-md, 8px);
+  padding: 24px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+}
+
+.orders-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.orders-table-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark, #1e293b);
+}
+
+.order-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.order-tab {
+  background: #f1f5f9;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  cursor: pointer;
+}
+
+.order-tab--active {
+  background: var(--primary-green, #246b45);
+  color: white;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.orders-table th {
+  padding: 12px 14px;
+  background: #f8fafc;
+  color: var(--text-muted, #64748b);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+}
+
+.orders-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+  color: var(--text-dark, #1e293b);
+}
+
+.font-mono {
+  font-family: var(--font-mono, monospace);
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.status-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+
+.status-payment_processing {
+  background: rgba(200, 155, 60, 0.15);
+  color: #92400e;
+}
+
+.status-in_transit {
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e40af;
+}
+
+.btn-xs {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .contract-terms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

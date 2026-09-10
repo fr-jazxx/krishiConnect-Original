@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Shield, CheckCircle2, Lock, FileText, Search,
   ExternalLink, Hash, ArrowUpRight, Cpu
@@ -6,7 +7,9 @@ import {
 import { ledgerEvents, formatTime } from '../../data/mockData';
 import './TrustLedger.css';
 
-export default function TrustLedger() {
+export default function TrustLedger({ role }) {
+  const location = useLocation();
+  const isBuyer = role === 'buyer' || location.pathname.startsWith('/buyer');
   const [selectedTx, setSelectedTx] = useState('KC-10284');
 
   return (
@@ -15,11 +18,19 @@ export default function TrustLedger() {
         <div>
           <div className="ledger-badge">
             <Shield size={14} className="badge-shield" />
-            <span>Decentralized Audit Log · Zero Manipulation Guarantee</span>
+            <span>
+              {isBuyer
+                ? 'Institutional Escrow Audit Log · Cryptographically Verified Settlement'
+                : 'Decentralized Audit Log · Zero Manipulation Guarantee'}
+            </span>
           </div>
-          <h1 className="page-title">Tamper-Evident Trust Ledger</h1>
+          <h1 className="page-title">
+            {isBuyer ? 'Buyer Escrow & Settlement Audit Trail' : 'Tamper-Evident Trust Ledger'}
+          </h1>
           <p className="page-subtitle">
-            Every scale reading, grade assessment, contract agreement, and rupee transferred is cryptographically sealed and publicly verifiable.
+            {isBuyer
+              ? 'Every dock weighment slip, cold-chain temperature ping, smart contract lock, and RTGS payment is cryptographically sealed and immutable.'
+              : 'Every scale reading, grade assessment, contract agreement, and rupee transferred is cryptographically sealed and publicly verifiable.'}
           </p>
         </div>
 
@@ -43,8 +54,18 @@ export default function TrustLedger() {
             onChange={(e) => setSelectedTx(e.target.value)}
             className="ledger-select"
           >
-            <option value="KC-10284">Order KC-10284 (Tomato · Ramesh Kumar → FreshMart)</option>
-            <option value="KC-10281">Order KC-10281 (Paddy · Ramesh Kumar → GrainWorld)</option>
+            {isBuyer ? (
+              <>
+                <option value="KC-10284">Contract #KC-TOM-9842 (FreshMart ← Ramesh Kumar · Tomato 1,250 kg)</option>
+                <option value="KC-10282">Contract #KC-POT-8031 (FreshMart ← Hooghly Potato Consortium · Potato 24,000 kg)</option>
+                <option value="KC-10285">Contract #KC-PAD-8022 (FreshMart ← Damodar Valley Grain · Paddy 18,000 kg)</option>
+              </>
+            ) : (
+              <>
+                <option value="KC-10284">Order KC-10284 (Tomato · Ramesh Kumar → FreshMart)</option>
+                <option value="KC-10281">Order KC-10281 (Paddy · Ramesh Kumar → GrainWorld)</option>
+              </>
+            )}
           </select>
         </div>
         <div className="block-height-tag">

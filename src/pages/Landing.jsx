@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, ShieldCheck, TrendingUp, Truck, Users, Award,
-  CheckCircle2, XCircle, Sprout, Building2, Globe, ChevronDown
+  CheckCircle2, XCircle, Sprout, Building2, Globe, ChevronDown, UserCheck, Check
 } from 'lucide-react';
 import LiquidGlass from '../components/effects/LiquidGlass';
+import RollingText from '../components/ui/RollingText';
+import FluidFieldBackground from '../components/ui/FluidFieldBackground';
 import { adminStats } from '../data/mockData';
 import { useLanguage } from '../context/LanguageContext';
 import './Landing.css';
@@ -13,6 +15,13 @@ export default function Landing() {
   const { language, setLanguage, t } = useLanguage();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langRef = useRef(null);
+  const mainContentRef = useRef(null);
+
+  const handleScrollToMain = () => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Smooth scroll reveal observer
   useEffect(() => {
@@ -24,7 +33,7 @@ export default function Landing() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.05, rootMargin: '120px 0px' }
     );
 
     const elements = document.querySelectorAll('.scroll-reveal');
@@ -34,18 +43,13 @@ export default function Landing() {
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(e) {
+    function handleDocClick(e) {
       if (langRef.current && !langRef.current.contains(e.target)) {
         setLangMenuOpen(false);
       }
     }
     if (langMenuOpen) {
       document.addEventListener('mousedown', handleDocClick);
-    }
-    function handleDocClick(e) {
-      if (langRef.current && !langRef.current.contains(e.target)) {
-        setLangMenuOpen(false);
-      }
     }
     return () => document.removeEventListener('mousedown', handleDocClick);
   }, [langMenuOpen]);
@@ -60,73 +64,109 @@ export default function Landing() {
 
   return (
     <div className="landing-page">
-      {/* Satellite Map Background */}
+      {/* Satellite Map Background of India */}
       <div className="landing-page__map-bg" />
       <div className="landing-page__gradient-overlay" />
 
-      {/* Header */}
-      <header className="landing-header">
-        <div className="landing-header__brand">
-          <div className="landing-brand-icon">
-            <Sprout size={24} className="text-emerald-400" />
-          </div>
-          <div className="landing-header__title-wrap">
-            <span className="landing-header__title">KRISHI</span>
-            <span className="landing-header__sub">CONNECT</span>
-          </div>
+      {/* Entrance Section with RollingText on Aerial Map */}
+      <section className="landing-entrance-hero">
+        <RollingText
+          text="KrishiConnect"
+          textColor="#ffffff"
+          onExplore={handleScrollToMain}
+        />
+      </section>
+
+      {/* Main Landing Shell that appears as you scroll */}
+      <div id="landing-main-content" ref={mainContentRef} className="landing-main-shell">
+        {/* Living Fluid Energy Field Background (revealed when scrolling into main content) */}
+        <div className="landing-fluid-container" aria-hidden="true">
+          <FluidFieldBackground className="landing-fluid-iframe" />
+          <div className="landing-fluid-vignette" />
         </div>
 
-        <nav className="landing-header__nav">
-          <a href="#problem" className="landing-nav-link">The Problem</a>
-          <a href="#features" className="landing-nav-link">Platform Pillars</a>
-          <Link to="/market" className="landing-nav-link">Live Mandi</Link>
-          <Link to="/buyer" className="landing-nav-link landing-nav-link--badge">
-            <Building2 size={14} className="inline mr-1" /> Buyer Portal
-          </Link>
-          <Link to="/admin" className="landing-nav-link text-xs opacity-80 hover:opacity-100">
-            Admin View
-          </Link>
-        </nav>
-
-        <div className="landing-header__right flex items-center gap-3">
-          {/* Language Switcher Pill */}
-          <div className="landing-lang-wrap" ref={langRef}>
-            <button
-              type="button"
-              className="landing-lang-btn"
-              onClick={() => setLangMenuOpen(!langMenuOpen)}
-            >
-              <Globe size={15} className="text-emerald-400" />
-              <span>{currentLangObj.native}</span>
-              <ChevronDown size={13} className={`transition-transform ${langMenuOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {langMenuOpen && (
-              <div className="landing-lang-menu animate-fade-in">
-                {languages.map((l) => (
-                  <button
-                    key={l.code}
-                    type="button"
-                    className={`landing-lang-item ${language === l.code ? 'landing-lang-item--active' : ''}`}
-                    onClick={() => {
-                      setLanguage(l.code);
-                      setLangMenuOpen(false);
-                    }}
-                  >
-                    <span>{l.native}</span>
-                    <small className="opacity-70">({l.label})</small>
-                  </button>
-                ))}
-              </div>
-            )}
+        {/* Header */}
+        <header className="landing-header">
+          <div className="landing-header__brand">
+            <div className="landing-brand-icon">
+              <Sprout size={24} className="text-emerald-400" />
+            </div>
+            <div className="landing-header__title-wrap">
+              <span className="landing-header__title">KRISHI</span>
+              <span className="landing-header__sub">CONNECT</span>
+            </div>
           </div>
 
-          <Link to="/dashboard" className="btn btn-primary landing-header__cta">
-            <span>Enter Platform</span>
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      </header>
+          <nav className="landing-header__nav">
+            <Link to="/farmer/login" className="landing-nav-link text-emerald-400 font-semibold flex items-center gap-1">
+              <UserCheck size={14} /> Farmer Login
+            </Link>
+            <a href="#problem" className="landing-nav-link">The Problem</a>
+            <a href="#features" className="landing-nav-link">Platform Pillars</a>
+            <Link to="/market" className="landing-nav-link">Live Mandi</Link>
+            <Link to="/buyer" className="landing-nav-link landing-nav-link--badge">
+              <Building2 size={14} className="inline mr-1" /> Buyer Portal
+            </Link>
+            <Link to="/admin" className="landing-nav-link text-xs opacity-80 hover:opacity-100">
+              Admin View
+            </Link>
+          </nav>
+
+          <div className="landing-header__right">
+            {/* Language Switcher Pill */}
+            <div className="landing-lang-wrap" ref={langRef}>
+              <button
+                type="button"
+                className={`landing-lang-btn ${langMenuOpen ? 'landing-lang-btn--open' : ''}`}
+                onClick={() => setLangMenuOpen(!langMenuOpen)}
+                aria-haspopup="listbox"
+                aria-expanded={langMenuOpen}
+                aria-label="Select Language"
+              >
+                <Globe size={15} className="landing-lang-btn__globe" />
+                <span className="landing-lang-btn__text">{currentLangObj.native}</span>
+                <ChevronDown size={14} className={`landing-lang-btn__chevron ${langMenuOpen ? 'landing-lang-btn__chevron--open' : ''}`} />
+              </button>
+
+              {langMenuOpen && (
+                <div className="landing-lang-menu animate-fade-in" role="listbox">
+                  <div className="landing-lang-menu__header">
+                    <span>Language / भाषा</span>
+                  </div>
+                  <div className="landing-lang-menu__items">
+                    {languages.map((l) => {
+                      const isActive = language === l.code;
+                      return (
+                        <button
+                          key={l.code}
+                          type="button"
+                          role="option"
+                          aria-selected={isActive}
+                          className={`landing-lang-item ${isActive ? 'landing-lang-item--active' : ''}`}
+                          onClick={() => {
+                            setLanguage(l.code);
+                            setLangMenuOpen(false);
+                          }}
+                        >
+                          <div className="landing-lang-item__labels">
+                            <span className="landing-lang-item__native">{l.native}</span>
+                            <span className="landing-lang-item__roman">{l.label}</span>
+                          </div>
+                          {isActive && <Check size={14} className="landing-lang-item__check" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Link to="/dashboard" className="btn btn-primary landing-header__cta">
+              <span>Enter Platform</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </header>
 
       {/* Hero Content */}
       <main className="landing-hero">
@@ -305,6 +345,7 @@ export default function Landing() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

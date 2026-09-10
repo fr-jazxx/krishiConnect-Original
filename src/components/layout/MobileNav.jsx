@@ -16,9 +16,9 @@ export default function MobileNav({ role }) {
 
   const buyerLinks = [
     { to: '/buyer', icon: LayoutDashboard, label: t('navOverview', 'Home') },
-    { to: '/market', icon: Store, label: t('navMarket', 'Market') },
+    { to: '/buyer/marketplace', icon: Store, label: t('navBuyerMarket', 'Wholesale') },
     { to: '/buyer/orders', icon: ClipboardList, label: t('navBuyerOrders', 'Contracts') },
-    { to: '/logistics', icon: Truck, label: t('navLogistics', 'Logistics') },
+    { to: '/buyer/tracking', icon: Truck, label: t('navBuyerTracking', 'Tracking') },
   ];
 
   const adminLinks = [

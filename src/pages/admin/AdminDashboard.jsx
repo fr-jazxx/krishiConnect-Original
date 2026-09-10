@@ -1,12 +1,28 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BarChart3, Users, Store, TrendingUp, ShieldAlert,
-  ArrowRight, CheckCircle2, AlertTriangle, Scale, Activity
+  ArrowRight, CheckCircle2, AlertTriangle, Scale, Activity,
+  UserX, UserCheck, ShieldBan, ShieldCheck
 } from 'lucide-react';
 import { adminStats } from '../../data/mockData';
+import { useKrishi } from '../../context/KrishiContext';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
+  const { users, toggleUserStatus } = useKrishi();
+  const [adminToast, setAdminToast] = useState(null);
+
+  const handleToggle = (userId, userName, currentStatus) => {
+    const nextStatus = currentStatus === 'verified' ? 'revoked' : 'verified';
+    toggleUserStatus(userId, nextStatus);
+    setAdminToast(
+      nextStatus === 'revoked'
+        ? `Access revoked for ${userName}. Deemed unverified for trade.`
+        : `Verified access granted to ${userName}.`
+    );
+    setTimeout(() => setAdminToast(null), 4000);
+  };
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
@@ -194,6 +210,109 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {adminToast && (
+        <div className="p-3 mb-4 rounded-lg bg-slate-900 text-white flex items-center justify-between text-sm animate-fade-in shadow-lg">
+          <span className="flex items-center gap-2">
+            <ShieldCheck size={18} className="text-emerald-400" />
+            <span>{adminToast}</span>
+          </span>
+          <button onClick={() => setAdminToast(null)} className="text-xs text-slate-400 hover:text-white">✕</button>
+        </div>
+      )}
+
+      {/* User Access & Trade Verification Management Panel */}
+      <div className="admin-panel mt-6">
+        <div className="panel-header flex justify-between items-center">
+          <div>
+            <h3>User & Entity Trade Authorization Control</h3>
+            <span className="text-xs text-muted">Manage buying/selling permissions and revoke access for non-compliant actors</span>
+          </div>
+          <span className="badge badge-accent">Oversight Authority: District APMC Registrar</span>
+        </div>
+
+        <div className="commodity-table-wrap mt-3">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Entity Name</th>
+                <th>Role</th>
+                <th>Location & Phone</th>
+                <th>Trades</th>
+                <th>Verification Status</th>
+                <th>Access Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td>
+                    <strong>{u.name}</strong>
+                    <span className="text-xs text-muted block">ID: {u.id}</span>
+                  </td>
+                  <td>
+                    <span className={`badge ${u.role.includes('Farmer') ? 'badge-primary' : 'badge-accent'}`}>
+                      {u.role}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="text-sm">{u.location}</span>
+                    <span className="text-xs text-muted block">{u.phone}</span>
+                  </td>
+                  <td>
+                    <strong>{u.tradeCount}</strong>
+                    <span className="text-xs text-muted block">Joined {u.joinDate}</span>
+                  </td>
+                  <td>
+                    {u.status === 'verified' && (
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
+                        <CheckCircle2 size={13} /> Verified for Trade
+                      </span>
+                    )}
+                    {u.status === 'pending' && (
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">
+                        <Activity size={13} /> Pending Review
+                      </span>
+                    )}
+                    {u.status === 'revoked' && (
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-100 px-2.5 py-1 rounded-full">
+                        <ShieldBan size={13} /> Access Revoked
+                      </span>
+                    )}
+                    {u.status === 'flagged' && (
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-100 px-2.5 py-1 rounded-full">
+                        <AlertTriangle size={13} /> Risk Flagged
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {u.status === 'verified' ? (
+                      <button
+                        type="button"
+                        onClick={() => handleToggle(u.id, u.name, u.status)}
+                        className="btn btn-outline text-xs py-1.5 px-3 border-rose-300 text-rose-700 hover:bg-rose-50 flex items-center gap-1"
+                      >
+                        <UserX size={13} />
+                        <span>Revoke Access</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleToggle(u.id, u.name, u.status)}
+                        className="btn btn-primary text-xs py-1.5 px-3 flex items-center gap-1"
+                      >
+                        <UserCheck size={13} />
+                        <span>Verify / Restore Access</span>
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
+

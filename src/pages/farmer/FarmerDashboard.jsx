@@ -3,16 +3,25 @@ import { Link } from 'react-router-dom';
 import {
   TrendingUp, Truck, ShieldCheck, PlusCircle, ArrowRight,
   Volume2, CheckCircle2, ChevronRight, AlertCircle, Sparkles,
-  Sprout, Wallet, Clock, MapPin, Award
+  Sprout, Wallet, Clock, MapPin, Award, Lock, CloudSun, Droplets, Leaf
 } from 'lucide-react';
 import CropImage from '../../components/common/CropImage';
-import { farmer, marketData, buyerOffer, activeOrders } from '../../data/mockData';
+import { farmer, marketData } from '../../data/mockData';
 import { useLanguage } from '../../context/LanguageContext';
+import { useKrishi } from '../../context/KrishiContext';
 import './FarmerDashboard.css';
 
 export default function FarmerDashboard() {
   const { t, language } = useLanguage();
+  const { buyerOffers, acceptBuyerOffer, orders } = useKrishi();
   const [speaking, setSpeaking] = useState(false);
+  const [acceptedToast, setAcceptedToast] = useState(null);
+
+  const handleAcceptOffer = (offerId, buyerName, crop) => {
+    acceptBuyerOffer(offerId);
+    setAcceptedToast(`Offer from ${buyerName} for ${crop} accepted! Order created in logistics.`);
+    setTimeout(() => setAcceptedToast(null), 4000);
+  };
 
   // Audio accessibility readout in the active language
   const handleReadSummary = () => {
@@ -217,57 +226,127 @@ export default function FarmerDashboard() {
             </div>
           </div>
 
-          {/* Direct Institutional Buy Offer Card */}
+          {acceptedToast && (
+            <div className="alert alert-success animate-fade-in mb-4 flex items-center justify-between p-3 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800">
+              <span className="flex items-center gap-2">
+                <CheckCircle2 size={18} className="text-emerald-600" />
+                <strong>{acceptedToast}</strong>
+              </span>
+              <Link to="/logistics" className="text-xs font-bold underline text-emerald-700">View in Logistics →</Link>
+            </div>
+          )}
+
+          {/* Direct Institutional Buy Offers Section */}
           <div className="dashboard-card buyer-deal-card">
             <div className="deal-header">
               <div className="deal-header__title">
-                <span className="badge badge-accent">{t('confirmedOfferTitle', 'Confirmed Buyer Offer')}</span>
-                <h3>{buyerOffer.crop} — 1,000 kg Bulk Procurement</h3>
+                <span className="badge badge-accent">Direct Buyer Offers ({buyerOffers.length})</span>
+                <h3>Active Institutional Procurement Offers</h3>
               </div>
               <div className="deal-timer">
                 <Clock size={15} />
-                <span>{t('validHours', 'Valid for 4 hours')}</span>
+                <span>Real-Time Escrow Guaranteed</span>
               </div>
             </div>
 
-            <div className="deal-body">
-              <div className="deal-buyer-info">
-                <div className="buyer-avatar-badge">FM</div>
-                <div>
-                  <strong>{buyerOffer.buyer}</strong>
-                  <span className="verified-tag flex items-center gap-1">
-                    <ShieldCheck size={13} className="text-emerald-600" />
-                    {t('verifiedInstitutional', 'Verified Institutional Buyer')}
-                  </span>
-                </div>
-              </div>
+            <div className="buyer-offers-stack mt-4 flex flex-col gap-4">
+              {buyerOffers.map((offer) => (
+                <div key={offer.id} className="buyer-offer-box p-4 rounded-xl border border-emerald-100 bg-emerald-50/40">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="deal-buyer-info">
+                      <div className="buyer-avatar-badge">{offer.buyer.slice(0, 2).toUpperCase()}</div>
+                      <div>
+                        <strong>{offer.buyer}</strong>
+                        <span className="verified-tag flex items-center gap-1 text-xs text-emerald-700">
+                          <ShieldCheck size={13} className="text-emerald-600" />
+                          Verified Institutional Buyer · {offer.timestamp}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="badge badge-primary">{offer.crop} · Grade {offer.grade}</span>
+                  </div>
 
-              <div className="deal-financials">
-                <div className="financial-col">
-                  <span className="fin-label">{t('unitPrice', 'Unit Price')}</span>
-                  <span className="fin-val">₹{buyerOffer.offerPrice} / kg</span>
-                </div>
-                <div className="financial-col">
-                  <span className="fin-label">{t('batchVolume', 'Volume')}</span>
-                  <span className="fin-val">{buyerOffer.quantity} kg</span>
-                </div>
-                <div className="financial-col highlight">
-                  <span className="fin-label">{t('netPayout', 'Direct Bank Payout')}</span>
-                  <span className="fin-val-large">₹{buyerOffer.estimatedPayout.toLocaleString('en-IN')}</span>
-                </div>
-              </div>
+                  <div className="deal-financials">
+                    <div className="financial-col">
+                      <span className="fin-label">Offered Price</span>
+                      <span className="fin-val text-emerald-700 font-bold">₹{offer.offeredPrice} / {offer.unit}</span>
+                      <span className="text-xs text-muted">Mandi: ₹{offer.mandiBenchmark}</span>
+                    </div>
+                    <div className="financial-col">
+                      <span className="fin-label">Requested Volume</span>
+                      <span className="fin-val">{offer.quantity} {offer.unit}</span>
+                    </div>
+                    <div className="financial-col highlight">
+                      <span className="fin-label">Guaranteed Bank Payout</span>
+                      <span className="fin-val-large">₹{offer.totalValue.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
 
-              <div className="deal-escrow-guarantee">
-                <ShieldCheck size={18} className="text-success flex-shrink-0" />
-                <span>{t('escrowGuaranteeNote', 'Funds held in RBI Escrow account. Guaranteed payment released immediately upon weighment verification.')}</span>
-              </div>
+                  <div className="deal-actions mt-3">
+                    {offer.status === 'accepted' ? (
+                      <div className="w-full py-2.5 px-4 bg-emerald-100 text-emerald-800 rounded-lg text-center font-bold text-sm flex items-center justify-center gap-2">
+                        <CheckCircle2 size={16} /> Offer Accepted · Logistics Dispatched
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleAcceptOffer(offer.id, offer.buyer, offer.crop)}
+                        className="btn btn-primary btn-lg btn-block deal-submit-btn"
+                      >
+                        <span>Accept Offer & Create Shared Order</span>
+                        <ArrowRight size={18} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* UPCOMING FEATURE (GREYED OUT): AI Soil & Weather Crop Predictor */}
+          <div className="dashboard-card upcoming-feature-card opacity-75 grayscale-[20%] border-dashed border-2 border-slate-300 bg-slate-50/80 mt-6 relative overflow-hidden">
+            <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 bg-slate-800 text-slate-200 text-xs font-bold rounded-full z-10">
+              <Lock size={12} />
+              <span>Upcoming Feature (Beta)</span>
             </div>
 
-            <div className="deal-actions">
-              <Link to="/orders" className="btn btn-primary btn-lg btn-block deal-submit-btn">
-                <span>{t('acceptOfferBtn', 'Accept Offer & Schedule Dispatch')}</span>
-                <ArrowRight size={18} />
-              </Link>
+            <div className="p-1">
+              <div className="flex items-center gap-2 text-slate-700 mb-1">
+                <CloudSun size={20} className="text-amber-500" />
+                <h3 className="text-base font-bold m-0 text-slate-800">
+                  AI Soil & Seasonal Weather Planting Advisor
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 mb-4">
+                Predicts optimal high-yield crops to plant over the next 3–6 months based on regional N-P-K soil composition, monsoon rainfall forecasts, and historical APMC demand peaks.
+              </p>
+
+              {/* Disabled Preview Pills */}
+              <div className="grid grid-cols-3 gap-3 pointer-events-none select-none filter blur-[0.3px]">
+                <div className="p-3 bg-white/80 rounded-lg border border-slate-200 shadow-sm text-center">
+                  <div className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1 mb-1">
+                    <Leaf size={14} className="text-emerald-600" /> Mustard (सरसों)
+                  </div>
+                  <div className="text-lg font-bold text-slate-700">94% Fit</div>
+                  <div className="text-[11px] text-slate-400">High Winter Return</div>
+                </div>
+
+                <div className="p-3 bg-white/80 rounded-lg border border-slate-200 shadow-sm text-center">
+                  <div className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1 mb-1">
+                    <Droplets size={14} className="text-blue-600" /> Lentils / Dal
+                  </div>
+                  <div className="text-lg font-bold text-slate-700">88% Fit</div>
+                  <div className="text-[11px] text-slate-400">Low Moisture Resilient</div>
+                </div>
+
+                <div className="p-3 bg-white/80 rounded-lg border border-slate-200 shadow-sm text-center">
+                  <div className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1 mb-1">
+                    <Sprout size={14} className="text-amber-600" /> Wheat PBW-550
+                  </div>
+                  <div className="text-lg font-bold text-slate-700">82% Fit</div>
+                  <div className="text-[11px] text-slate-400">District Soil Optimal</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -276,12 +355,12 @@ export default function FarmerDashboard() {
         <div className="farmer-dashboard__right">
           <div className="dashboard-card active-consignments-card">
             <div className="dashboard-card__header">
-              <h3>{t('activeConsignmentsTitle', 'Active Consignments')}</h3>
+              <h3>{t('activeConsignmentsTitle', 'Active Consignments')} ({orders.length})</h3>
               <Link to="/orders" className="btn-link">{t('viewAll', 'View All')}</Link>
             </div>
 
             <div className="active-orders-list">
-              {activeOrders.map((order) => (
+              {orders.map((order) => (
                 <div key={order.id} className="order-item-compact">
                   <div className="order-item-top">
                     <div className="flex items-center gap-3">
@@ -299,8 +378,8 @@ export default function FarmerDashboard() {
                   <div className="order-status-row">
                     <span className="order-status-badge">
                       {order.status === 'in_transit' ? (
-                        <span className="flex items-center gap-1.5 text-emerald-700">
-                          <Truck size={14} /> {t('inTransit', 'In Transit')}
+                        <span className="flex items-center gap-1.5 text-emerald-700 font-semibold">
+                          <Truck size={14} /> {t('inTransit', 'In Transit')} ({order.eta || '35 mins'})
                         </span>
                       ) : (
                         <span className="flex items-center gap-1.5 text-blue-700">
@@ -321,3 +400,4 @@ export default function FarmerDashboard() {
     </div>
   );
 }
+

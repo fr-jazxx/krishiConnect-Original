@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
+import Sidebar, { SidebarProvider, useSidebar } from './Sidebar';
 import Topbar from './Topbar';
 import MobileNav from './MobileNav';
+import { cn } from '../../lib/utils';
 import './AppLayout.css';
 
-export default function AppLayout() {
+function AppLayoutInner() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isPinned } = useSidebar();
 
   // Infer role from current path
   const getRoleFromPath = (path) => {
@@ -36,7 +38,7 @@ export default function AppLayout() {
   return (
     <div className="app-layout">
       <Sidebar role={role} onRoleChange={handleRoleChange} />
-      <div className="app-layout__main">
+      <div className={cn('app-layout__main', isPinned && 'app-layout__main--pinned')}>
         <Topbar role={role} />
         <main className="app-layout__content">
           <Outlet />
@@ -44,5 +46,13 @@ export default function AppLayout() {
       </div>
       <MobileNav role={role} />
     </div>
+  );
+}
+
+export default function AppLayout() {
+  return (
+    <SidebarProvider>
+      <AppLayoutInner />
+    </SidebarProvider>
   );
 }

@@ -1,17 +1,54 @@
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, createContext, useContext } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Sprout, Store, ClipboardList,
-  CreditCard, Truck, Shield, Settings, HelpCircle,
-  BarChart3, Eye, AlertTriangle, ChevronLeft, ChevronRight,
-  ShoppingBag, Building2, Layers
+  CreditCard, Truck, Shield, HelpCircle,
+  BarChart3, Eye, AlertTriangle, Building2,
+  Pin, PinOff, CheckCircle2, ChevronRight, Menu, X
 } from 'lucide-react';
-import { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { farmer } from '../../data/mockData';
+import { cn } from '../../lib/utils';
 import './Sidebar.css';
 
+// ── Sidebar Context ──
+const SidebarContext = createContext(null);
+
+export const useSidebar = () => {
+  const context = useContext(SidebarContext);
+  if (!context) {
+    throw new Error('useSidebar must be used within a SidebarProvider');
+  }
+  return context;
+};
+
+export function SidebarProvider({ children }) {
+  const [open, setOpen] = useState(false);
+  const [isPinned, setIsPinned] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const effectiveOpen = isPinned || open;
+
+  return (
+    <SidebarContext.Provider
+      value={{
+        open: effectiveOpen,
+        setOpen,
+        isPinned,
+        setIsPinned,
+        mobileOpen,
+        setMobileOpen,
+      }}
+    >
+      {children}
+    </SidebarContext.Provider>
+  );
+}
+
+// ── Main Sidebar Component ──
 export default function Sidebar({ role, onRoleChange }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
+  const { open, setOpen, isPinned, setIsPinned } = useSidebar();
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -25,12 +62,13 @@ export default function Sidebar({ role, onRoleChange }) {
     { to: '/ledger', icon: Shield, label: t('navLedger', 'Trust Ledger') },
   ];
 
+  // Wholesaler / Buyer Navigation (points to /buyer/marketplace instead of farmer /market)
   const buyerNav = [
     { to: '/buyer', icon: LayoutDashboard, label: t('navOverview', 'Overview') },
-    { to: '/market', icon: Store, label: t('navBuyerMarket', 'Wholesale Market') },
+    { to: '/buyer/marketplace', icon: Store, label: t('navBuyerMarket', 'Wholesale Market') },
     { to: '/buyer/orders', icon: ClipboardList, label: t('navBuyerOrders', 'Contracts & Bids') },
-    { to: '/logistics', icon: Truck, label: t('navBuyerTracking', 'Fleet Tracking') },
-    { to: '/ledger', icon: Shield, label: t('navLedger', 'Trust Ledger') },
+    { to: '/buyer/tracking', icon: Truck, label: t('navBuyerTracking', 'Fleet Tracking') },
+    { to: '/buyer/ledger', icon: Shield, label: t('navLedger', 'Trust Ledger') },
   ];
 
   const adminNav = [
@@ -41,95 +79,268 @@ export default function Sidebar({ role, onRoleChange }) {
 
   const activeNavList = role === 'admin' ? adminNav : role === 'buyer' ? buyerNav : farmerNav;
 
+  const userProfiles = {
+    farmer: {
+      name: farmer.name,
+      role: 'Verified Producer',
+      sub: 'Bardhaman Hub',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+    },
+    buyer: {
+      name: 'FreshMart Procurement',
+      role: 'Institutional Buyer',
+      sub: 'APMC Certified',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    },
+    admin: {
+      name: 'Dr. S. K. Roy',
+      role: 'Nodal Officer',
+      sub: 'State Directorate',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80',
+    },
+  };
+
+  const currentUser = userProfiles[role] || userProfiles.farmer;
+
   return (
-    <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
+    <motion.aside
+      className={cn(
+        'sidebar-aceternity',
+        open ? 'sidebar-aceternity--open' : 'sidebar-aceternity--collapsed',
+        isPinned && 'sidebar-aceternity--pinned'
+      )}
+      animate={{
+        width: open ? 260 : 68,
+      }}
+      transition={{
+        duration: 0.28,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      onMouseEnter={() => !isPinned && setOpen(true)}
+      onMouseLeave={() => !isPinned && setOpen(false)}
+    >
       {/* Brand Header */}
-      <div className="sidebar__header">
-        <div className="sidebar__brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <div className="sidebar__icon-box">
-            <Sprout size={22} className="text-primary-green" />
+      <div className="sidebar-aceternity__header">
+        <div
+          className="sidebar-aceternity__brand"
+          onClick={() => navigate('/')}
+          title="KrishiConnect Home"
+        >
+          <div className="sidebar-aceternity__icon-box">
+            <Sprout size={22} className="text-emerald-400" />
           </div>
-          {!collapsed && (
-            <div className="sidebar__brand-text">
-              <span className="sidebar__title">KRISHI</span>
-              <span className="sidebar__subtitle">CONNECT</span>
-            </div>
-          )}
+
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+                transition={{ duration: 0.18 }}
+                className="sidebar-aceternity__brand-text"
+              >
+                <span className="sidebar-aceternity__title">KRISHI</span>
+                <span className="sidebar-aceternity__subtitle">CONNECT</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        <button
-          className="sidebar__toggle"
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-        </button>
+
+        {/* Pin button only visible when open - clean, non-overlapping */}
+        {open && (
+          <button
+            type="button"
+            className={cn(
+              'sidebar-aceternity__pin-btn',
+              isPinned && 'sidebar-aceternity__pin-btn--active'
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsPinned(!isPinned);
+            }}
+            title={isPinned ? 'Unpin Sidebar (Auto-collapse)' : 'Pin Sidebar (Keep Open)'}
+          >
+            {isPinned ? <PinOff size={14} /> : <Pin size={14} />}
+          </button>
+        )}
       </div>
 
-      {/* 3-Way Role Switcher: Farmer, Buyer, Admin */}
-      <div className="sidebar__role-switch">
-        <button
-          type="button"
-          className={`sidebar__role-btn ${role === 'farmer' ? 'sidebar__role-btn--active' : ''}`}
-          onClick={() => onRoleChange('farmer')}
-          title={t('farmerRole', 'Farmer')}
-        >
-          <Sprout size={15} />
-          {!collapsed && <span>{t('farmerRole', 'Farmer')}</span>}
-        </button>
-
-        <button
-          type="button"
-          className={`sidebar__role-btn ${role === 'buyer' ? 'sidebar__role-btn--active' : ''}`}
-          onClick={() => onRoleChange('buyer')}
-          title={t('buyerRole', 'Buyer')}
-        >
-          <Building2 size={15} />
-          {!collapsed && <span>{t('buyerRole', 'Buyer')}</span>}
-        </button>
-
-        <button
-          type="button"
-          className={`sidebar__role-btn ${role === 'admin' ? 'sidebar__role-btn--active' : ''}`}
-          onClick={() => onRoleChange('admin')}
-          title={t('adminRole', 'Admin')}
-        >
-          <Shield size={15} />
-          {!collapsed && <span>{t('adminRole', 'Admin')}</span>}
-        </button>
+      {/* 3-Way Role Switcher */}
+      <div className="sidebar-aceternity__role-switch">
+        {open ? (
+          <div className="role-switch-expanded">
+            <button
+              type="button"
+              className={cn(
+                'role-tab-btn',
+                role === 'farmer' && 'role-tab-btn--active'
+              )}
+              onClick={() => onRoleChange('farmer')}
+            >
+              <Sprout size={13} />
+              <span>Farmer</span>
+            </button>
+            <button
+              type="button"
+              className={cn(
+                'role-tab-btn',
+                role === 'buyer' && 'role-tab-btn--active'
+              )}
+              onClick={() => onRoleChange('buyer')}
+            >
+              <Building2 size={13} />
+              <span>Buyer</span>
+            </button>
+            <button
+              type="button"
+              className={cn(
+                'role-tab-btn',
+                role === 'admin' && 'role-tab-btn--active'
+              )}
+              onClick={() => onRoleChange('admin')}
+            >
+              <Shield size={13} />
+              <span>Admin</span>
+            </button>
+          </div>
+        ) : (
+          <div className="role-switch-collapsed">
+            <button
+              type="button"
+              className={cn(
+                'role-dot-btn',
+                role === 'farmer' && 'role-dot-btn--active'
+              )}
+              onClick={() => onRoleChange('farmer')}
+              title="Switch to Farmer Portal"
+            >
+              <Sprout size={16} />
+            </button>
+            <button
+              type="button"
+              className={cn(
+                'role-dot-btn',
+                role === 'buyer' && 'role-dot-btn--active'
+              )}
+              onClick={() => onRoleChange('buyer')}
+              title="Switch to Buyer Portal"
+            >
+              <Building2 size={16} />
+            </button>
+            <button
+              type="button"
+              className={cn(
+                'role-dot-btn',
+                role === 'admin' && 'role-dot-btn--active'
+              )}
+              onClick={() => onRoleChange('admin')}
+              title="Switch to Admin Oversight"
+            >
+              <Shield size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Navigation */}
-      <nav className="sidebar__nav">
-        <div className="sidebar__nav-group">
+      {/* Navigation Links */}
+      <nav className="sidebar-aceternity__nav">
+        <div className="sidebar-aceternity__nav-list">
           {activeNavList.map((item) => (
             <NavLink
               key={item.to + item.label}
               to={item.to}
               end={item.to === '/dashboard' || item.to === '/buyer' || item.to === '/admin'}
               className={({ isActive }) =>
-                `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+                cn(
+                  'sidebar-aceternity__link group/link',
+                  isActive && 'sidebar-aceternity__link--active'
+                )
               }
-              title={item.label}
+              title={!open ? item.label : undefined}
             >
-              <item.icon size={20} className="sidebar__link-icon" />
-              {!collapsed && <span className="sidebar__link-text">{item.label}</span>}
+              <item.icon size={20} className="sidebar-aceternity__link-icon" />
+
+              <motion.span
+                animate={{
+                  display: open ? 'inline-block' : 'none',
+                  opacity: open ? 1 : 0,
+                  x: open ? 0 : -6,
+                }}
+                transition={{ duration: 0.18 }}
+                className="sidebar-aceternity__link-label"
+              >
+                {item.label}
+              </motion.span>
             </NavLink>
           ))}
         </div>
       </nav>
 
-      {/* Footer / Utilities */}
-      <div className="sidebar__footer">
-        <NavLink to="/ledger" className="sidebar__link" title={t('navLedger', 'Trust Ledger')}>
-          <Shield size={18} className="sidebar__link-icon" />
-          {!collapsed && <span>{t('navLedger', 'Trust Ledger')}</span>}
+      {/* Footer / User Profile */}
+      <div className="sidebar-aceternity__footer">
+        <NavLink
+          to={role === 'buyer' ? '/buyer/ledger' : role === 'admin' ? '/admin/trust-monitor' : '/ledger'}
+          className="sidebar-aceternity__link sidebar-aceternity__link--utility"
+          title={!open ? 'Trust Ledger' : undefined}
+        >
+          <Shield size={18} className="sidebar-aceternity__link-icon" />
+          <motion.span
+            animate={{
+              display: open ? 'inline-block' : 'none',
+              opacity: open ? 1 : 0,
+            }}
+            transition={{ duration: 0.18 }}
+            className="sidebar-aceternity__link-label"
+          >
+            Trust Ledger
+          </motion.span>
         </NavLink>
-        <NavLink to="/help" className="sidebar__link" title={t('navHelp', 'Help')}>
-          <HelpCircle size={18} className="sidebar__link-icon" />
-          {!collapsed && <span>{t('navHelp', 'Help')}</span>}
+
+        <NavLink
+          to="/help"
+          className="sidebar-aceternity__link sidebar-aceternity__link--utility"
+          title={!open ? 'Help & Support' : undefined}
+        >
+          <HelpCircle size={18} className="sidebar-aceternity__link-icon" />
+          <motion.span
+            animate={{
+              display: open ? 'inline-block' : 'none',
+              opacity: open ? 1 : 0,
+            }}
+            transition={{ duration: 0.18 }}
+            className="sidebar-aceternity__link-label"
+          >
+            Help & Support
+          </motion.span>
         </NavLink>
+
+        {/* User Card */}
+        <div className="sidebar-aceternity__user-card">
+          <div className="user-avatar-wrap">
+            <img
+              src={currentUser.avatar}
+              alt={currentUser.name}
+              className="user-avatar-img"
+            />
+            <span className="user-online-dot" />
+          </div>
+
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -6 }}
+                transition={{ duration: 0.18 }}
+                className="user-details"
+              >
+                <span className="user-name">{currentUser.name}</span>
+                <span className="user-role">{currentUser.role}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-    </aside>
+    </motion.aside>
   );
 }

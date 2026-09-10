@@ -7,10 +7,12 @@ import {
 } from 'lucide-react';
 import { logisticsRoutes } from '../../data/mockData';
 import { useLanguage } from '../../context/LanguageContext';
+import { useKrishi } from '../../context/KrishiContext';
 import './Logistics.css';
 
 export default function Logistics() {
   const { t } = useLanguage();
+  const { orders } = useKrishi();
   const [selectedRoute, setSelectedRoute] = useState(logisticsRoutes[0]);
   const [mapMode, setMapMode] = useState('satellite'); // 'satellite', 'roadmap', 'night'
   const [isSimulating, setIsSimulating] = useState(true);

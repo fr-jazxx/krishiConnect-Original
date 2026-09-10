@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import {
   CheckCircle2, Sparkles, ArrowRight, ShieldCheck, Zap,
-  Snowflake, Warehouse, Package, Scale, Calendar, IndianRupee
+  Snowflake, Warehouse, Package, Scale, Calendar, IndianRupee,
+  Camera, X, UploadCloud
 } from 'lucide-react';
 import CropImage from '../../components/common/CropImage';
 import CustomSelect from '../../components/common/CustomSelect';
-import { produceListings } from '../../data/mockData';
 import { useLanguage } from '../../context/LanguageContext';
+import { useKrishi } from '../../context/KrishiContext';
 import './ListProduce.css';
 
 const visualCrops = [
   { id: 'Tomato', name: 'Tomato', hindi: 'टमाटर', bangla: 'টমেটো', defaultPrice: 29 },
-  { id: 'Paddy', name: 'Paddy', hindi: 'धान', bangla: 'ধান', defaultPrice: 33 },
+  { id: 'Paddy', name: 'Paddy', hindi: 'धान', bangla: 'धान', defaultPrice: 33 },
   { id: 'Potato', name: 'Potato', hindi: 'आलू', bangla: 'আলু', defaultPrice: 22 },
   { id: 'Onion', name: 'Onion', hindi: 'प्याज', bangla: 'পেঁয়াজ', defaultPrice: 35 },
   { id: 'Wheat', name: 'Wheat', hindi: 'गेहूं', bangla: 'গম', defaultPrice: 28 },
@@ -20,7 +21,7 @@ const visualCrops = [
 
 export default function ListProduce() {
   const { t, language } = useLanguage();
-  const [listings, setListings] = useState(produceListings);
+  const { addProduceListing, listings = [] } = useKrishi();
   const [formData, setFormData] = useState({
     crop: 'Tomato',
     quantity: '1000',
@@ -30,7 +31,25 @@ export default function ListProduce() {
     harvestDate: new Date().toISOString().split('T')[0],
     storage: 'cold_storage',
   });
+  const [uploadedPhotos, setUploadedPhotos] = useState([
+    'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80',
+  ]);
   const [submitted, setSubmitted] = useState(false);
+
+  const handlePhotoUpload = (e) => {
+    const files = Array.from(e.target.files || []);
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        setUploadedPhotos((prev) => [...prev, uploadEvent.target.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removePhoto = (index) => {
+    setUploadedPhotos((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const unitOptions = [
     { value: 'kg', label: t('unitKg', 'kg') },
@@ -85,9 +104,12 @@ export default function ListProduce() {
       location: 'Bardhaman',
       harvestDate: formData.harvestDate,
       status: 'listed',
+      photos: uploadedPhotos,
+      farmerName: 'Ramesh Kumar',
+      farmerPhone: '+91 98452 11029',
     };
 
-    setListings([newListing, ...listings]);
+    addProduceListing(newListing);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
   };
@@ -223,6 +245,66 @@ export default function ListProduce() {
                   <strong>{t('gradeBDesc', 'Standard Mandi Benchmark Pricing')}</strong>
                   <span className="grade-desc">Mandi Benchmark Pricing</span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData((p) => ({ ...p, grade: 'C' }))}
+                  className={`grade-pill ${formData.grade === 'C' ? 'grade-pill--active' : ''}`}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="grade-badge grade-c" style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>
+                      Grade C
+                    </span>
+                    {formData.grade === 'C' && <CheckCircle2 size={16} className="text-rose-700" />}
+                  </div>
+                  <strong>Processing & Bulk Grade (-8% Discount)</strong>
+                  <span className="grade-desc">Quick Industrial Clearance</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Produce Photo Upload Section */}
+            <div className="form-group">
+              <label className="input-field-label flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Camera size={16} className="text-emerald-600" />
+                  <span>Upload Produce Verification Photos (फसल की तस्वीरें)</span>
+                </span>
+                <span className="text-xs text-muted">Photos boost buyer trust by 85%</span>
+              </label>
+
+              <div className="photo-upload-container">
+                <label className="photo-upload-dropzone">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                  <UploadCloud size={24} className="text-emerald-600 mb-1" />
+                  <span className="text-sm font-semibold text-slate-700">Click to Upload Batch Photos</span>
+                  <span className="text-xs text-muted">Supports JPG, PNG · Max 5MB each</span>
+                </label>
+
+                {uploadedPhotos.length > 0 && (
+                  <div className="photo-preview-strip">
+                    {uploadedPhotos.map((url, idx) => (
+                      <div key={idx} className="photo-preview-item">
+                        <img src={url} alt={`Produce upload ${idx + 1}`} className="photo-thumb" />
+                        <span className="photo-grade-tag">Grade {formData.grade}</span>
+                        <button
+                          type="button"
+                          onClick={() => removePhoto(idx)}
+                          className="photo-remove-btn"
+                          title="Remove photo"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

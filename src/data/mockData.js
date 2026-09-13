@@ -25,6 +25,9 @@ export const produceListings = [
     location: 'Bardhaman',
     harvestDate: '2026-09-08',
     status: 'listed',
+    photos: [
+      'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+    ],
   },
   {
     id: 'P103',
@@ -36,6 +39,9 @@ export const produceListings = [
     location: 'Bardhaman',
     harvestDate: '2026-09-05',
     status: 'listed',
+    photos: [
+      'https://images.unsplash.com/photo-1728895604559-a4e16081504e?w=800&auto=format&fit=crop&q=80',
+    ],
   },
 ];
 
@@ -76,6 +82,9 @@ export const marketBoard = [
     distance: '18 km',
     seller: 'Ramesh Kumar',
     sellerType: 'Farmer',
+    photos: [
+      'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+    ],
   },
   {
     id: 'ML002',
@@ -88,6 +97,9 @@ export const marketBoard = [
     distance: '31 km',
     seller: 'Anil Singh',
     sellerType: 'FPO',
+    photos: [
+      'https://images.unsplash.com/photo-1728895604559-a4e16081504e?w=800&auto=format&fit=crop&q=80',
+    ],
   },
   {
     id: 'ML003',
@@ -100,6 +112,9 @@ export const marketBoard = [
     distance: '45 km',
     seller: 'Vikram Patel',
     sellerType: 'Farmer',
+    photos: [
+      'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80',
+    ],
   },
   {
     id: 'ML004',
@@ -112,6 +127,9 @@ export const marketBoard = [
     distance: '52 km',
     seller: 'Suresh FPO',
     sellerType: 'FPO',
+    photos: [
+      'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80',
+    ],
   },
   {
     id: 'ML005',
@@ -124,6 +142,9 @@ export const marketBoard = [
     distance: '28 km',
     seller: 'Manoj Das',
     sellerType: 'Farmer',
+    photos: [
+      'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
+    ],
   },
 ];
 

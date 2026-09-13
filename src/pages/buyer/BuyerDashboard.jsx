@@ -30,6 +30,38 @@ export default function BuyerDashboard() {
     notes: 'Urgent lab testing for bulk 10-tonne procurement',
   });
 
+  // Safe fallback crop photo mapping to ensure crops are never mismatched
+  const getCropPhotos = (crop, existingPhotos) => {
+    if (existingPhotos && existingPhotos.length > 0) return existingPhotos;
+    const cropImages = {
+      tomato: [
+        'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=600&auto=format&fit=crop&q=80'
+      ],
+      paddy: [
+        'https://images.unsplash.com/photo-1728895604559-a4e16081504e?w=800&auto=format&fit=crop&q=80'
+      ],
+      rice: [
+        'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80'
+      ],
+      onion: [
+        'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80'
+      ],
+      wheat: [
+        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80'
+      ],
+      potato: [
+        'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80'
+      ],
+      mustard: [
+        'https://images.unsplash.com/photo-1701188542949-210beb8e382c?w=800&auto=format&fit=crop&q=80'
+      ]
+    };
+    return cropImages[crop?.toLowerCase()] || [
+      'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80'
+    ];
+  };
+
   // Combine mock lots and newly listed farm lots
   const combinedLots = [
     ...listings.map((l) => ({
@@ -43,16 +75,12 @@ export default function BuyerDashboard() {
       distance: '18 km',
       seller: l.farmerName || 'Ramesh Kumar',
       sellerType: 'Farmer',
-      photos: l.photos || [
-        'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80',
-      ],
+      photos: getCropPhotos(l.crop, l.photos),
       harvestDate: l.harvestDate || '2026-09-08',
     })),
     ...marketBoard.map((m) => ({
       ...m,
-      photos: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&auto=format&fit=crop&q=80',
-      ],
+      photos: getCropPhotos(m.crop, m.photos),
       harvestDate: '2026-09-07',
     })),
   ];
@@ -349,23 +377,37 @@ export default function BuyerDashboard() {
                 </div>
               </div>
 
-              {/* Photo Thumbnail Strip */}
+              {/* Produce Media Banner with Frosted Glass View Button */}
               {lot.photos && lot.photos.length > 0 && (
-                <div className="lot-photos-preview mt-2 mb-2 flex items-center gap-2">
+                <div
+                  className="lot-media-banner"
+                  onClick={() => handleOpenPhotos(lot)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleOpenPhotos(lot)}
+                >
                   <img
                     src={lot.photos[0]}
-                    alt={lot.crop}
-                    className="w-14 h-14 rounded-lg object-cover border border-slate-200 cursor-pointer"
-                    onClick={() => handleOpenPhotos(lot)}
+                    alt={`${lot.crop} lot batch`}
+                    className="lot-media-image"
                   />
+                  <div className="lot-media-overlay" />
                   <button
                     type="button"
-                    onClick={() => handleOpenPhotos(lot)}
-                    className="text-xs text-emerald-700 font-semibold hover:underline flex items-center gap-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenPhotos(lot);
+                    }}
+                    className="btn-view-photos"
+                    title={`Inspect ${lot.photos.length} verified farm photos`}
                   >
-                    <Camera size={13} />
-                    <span>View {lot.photos.length} Farmer Photos</span>
+                    <Camera size={13} className="camera-icon" />
+                    <span>View {lot.photos.length} Farmer Photo{lot.photos.length > 1 ? 's' : ''}</span>
                   </button>
+                  <span className="lot-media-badge">
+                    <CheckCircle2 size={11} className="badge-check-icon" />
+                    <span>Verified Batch</span>
+                  </span>
                 </div>
               )}
 
@@ -572,26 +614,26 @@ export default function BuyerDashboard() {
               </button>
             </div>
 
-            <div className="photo-gallery-body p-4">
-              <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="photo-gallery-container">
+              <div className="photo-preview-grid">
                 {selectedBatch.photos?.map((photo, i) => (
-                  <div key={i} className="rounded-xl overflow-hidden border border-slate-200 shadow-sm relative">
-                    <img src={photo} alt="Batch produce" className="w-full h-44 object-cover" />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 bg-black/70 text-white text-[11px] font-bold rounded">
-                      Verified Batch Photo {i + 1}
+                  <div key={i} className="photo-preview-card">
+                    <img src={photo} alt="Batch produce" className="photo-preview-img" />
+                    <span className="photo-preview-badge">
+                      Verified Batch Photo #{i + 1}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
+              <div className="photo-audit-notice">
+                <CheckCircle2 size={16} className="audit-check-icon" />
                 <span>Digitally signed geotagged photo from {selectedBatch.seller}'s farm in {selectedBatch.location}. Verified with Grade {selectedBatch.grade} quality parameters.</span>
               </div>
             </div>
 
-            <div className="modal-actions p-4 pt-0">
-              <button type="button" className="btn btn-primary btn-block" onClick={() => setPhotoModalOpen(false)}>
+            <div className="modal-actions-bar mt-4 pt-3 border-t border-slate-100">
+              <button type="button" className="btn btn-primary w-full" onClick={() => setPhotoModalOpen(false)}>
                 Close Preview
               </button>
             </div>

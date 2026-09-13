@@ -50,7 +50,7 @@ const wholesaleLotsData = [
     moisture: '12.4%',
     shelfLife: '18 Months',
     photos: [
-      'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1728895604559-a4e16081504e?w=800&auto=format&fit=crop&q=80'
     ]
   },
   {
@@ -134,7 +134,7 @@ const wholesaleLotsData = [
     moisture: '8.2%',
     shelfLife: '12 Months',
     photos: [
-      'https://images.unsplash.com/photo-1508746829417-e6f548d8d6ed?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1701188542949-210beb8e382c?w=800&auto=format&fit=crop&q=80'
     ]
   }
 ];

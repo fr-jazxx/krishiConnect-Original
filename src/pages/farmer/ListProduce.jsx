@@ -264,13 +264,13 @@ export default function ListProduce() {
             </div>
 
             {/* Produce Photo Upload Section */}
-            <div className="form-group">
-              <label className="input-field-label flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
+            <div className="form-group photo-upload-group">
+              <label className="input-field-label">
+                <span className="label-with-icon">
                   <Camera size={16} className="text-emerald-600" />
                   <span>Upload Produce Verification Photos (फसल की तस्वीरें)</span>
                 </span>
-                <span className="text-xs text-muted">Photos boost buyer trust by 85%</span>
+                <span className="photo-trust-badge">Photos boost buyer trust by 85%</span>
               </label>
 
               <div className="photo-upload-container">
@@ -280,11 +280,13 @@ export default function ListProduce() {
                     accept="image/*"
                     multiple
                     onChange={handlePhotoUpload}
-                    className="hidden"
+                    style={{ display: 'none' }}
                   />
-                  <UploadCloud size={24} className="text-emerald-600 mb-1" />
-                  <span className="text-sm font-semibold text-slate-700">Click to Upload Batch Photos</span>
-                  <span className="text-xs text-muted">Supports JPG, PNG · Max 5MB each</span>
+                  <div className="dropzone-icon-circle">
+                    <UploadCloud size={22} className="text-emerald-600" />
+                  </div>
+                  <span className="dropzone-main-text">Click to Upload Batch Photos</span>
+                  <span className="dropzone-sub-text">Supports JPG, PNG · Max 5MB each</span>
                 </label>
 
                 {uploadedPhotos.length > 0 && (
@@ -338,16 +340,19 @@ export default function ListProduce() {
               </div>
 
               <div className="form-group">
-                <label className="input-field-label flex items-center gap-1.5">
-                  <Calendar size={14} className="text-slate-500" />
-                  <span>{t('harvestDate', 'Harvest Date')}</span>
+                <label className="input-field-label">
+                  <span className="label-with-icon">
+                    <Calendar size={15} className="text-emerald-700" />
+                    <span>{t('harvestDate', 'Harvest Date')}</span>
+                  </span>
+                  <span className="label-hint">DD / MM / YYYY</span>
                 </label>
                 <input
                   type="date"
                   value={formData.harvestDate}
                   onChange={(e) => setFormData({ ...formData, harvestDate: e.target.value })}
                   required
-                  className="form-control"
+                  className="form-control harvest-date-control"
                 />
               </div>
             </div>

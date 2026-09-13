@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Truck, MapPin, Navigation, Clock, CheckCircle2,
   PhoneCall, Shield, AlertTriangle, ChevronRight, Phone,
@@ -10,6 +10,81 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useKrishi } from '../../context/KrishiContext';
 import './Logistics.css';
 
+// ── Canonical Google Highway Route Polyline ──
+// Accurately follows every major turn of NH-19 (Bardhaman -> Memari -> Jamalpur -> Gurap -> Dankuni -> Belghoria Expwy -> Kolkata APMC)
+export const CANONICAL_ROUTE_POINTS = [
+  { x: 80, y: 70, name: 'Bardhaman Farmer Hub' },
+  { x: 140, y: 66 },
+  { x: 200, y: 60 },
+  { x: 260, y: 54 },
+  { x: 310, y: 50 },
+  { x: 345, y: 55, name: 'Memari Cold Storage Checkpoint' },
+  { x: 370, y: 78 },
+  { x: 392, y: 108 },
+  { x: 406, y: 138 },
+  { x: 417, y: 168 },
+  { x: 427, y: 202 },
+  { x: 438, y: 238 },
+  { x: 449, y: 272 },
+  { x: 462, y: 302 },
+  { x: 478, y: 324, name: 'Dankuni Highway Weighbridge' },
+  { x: 500, y: 318 },
+  { x: 530, y: 304 },
+  { x: 565, y: 292 },
+  { x: 610, y: 284 },
+  { x: 660, y: 285 },
+  { x: 720, y: 290, name: 'Kolkata Institutional Terminal (APMC)' }
+];
+
+// Precompute cumulative lengths along the canonical route polyline
+const { ROUTE_CUM_DISTS, ROUTE_TOTAL_LEN } = (() => {
+  const dists = [0];
+  let sum = 0;
+  for (let i = 0; i < CANONICAL_ROUTE_POINTS.length - 1; i++) {
+    const dx = CANONICAL_ROUTE_POINTS[i + 1].x - CANONICAL_ROUTE_POINTS[i].x;
+    const dy = CANONICAL_ROUTE_POINTS[i + 1].y - CANONICAL_ROUTE_POINTS[i].y;
+    sum += Math.hypot(dx, dy);
+    dists.push(sum);
+  }
+  return { ROUTE_CUM_DISTS: dists, ROUTE_TOTAL_LEN: sum };
+})();
+
+// Single canonical SVG path string (exact same route geometry for visual path & truck)
+const CANONICAL_PATH_D = CANONICAL_ROUTE_POINTS.reduce(
+  (acc, pt, i) => (i === 0 ? `M ${pt.x} ${pt.y}` : `${acc} L ${pt.x} ${pt.y}`),
+  ''
+);
+
+// Sample coordinates (x, y) and heading angle sequentially along the canonical route
+function getTruckTransform(progressPercent) {
+  const norm = Math.max(0, Math.min(100, progressPercent)) / 100;
+  const targetDist = norm * ROUTE_TOTAL_LEN;
+
+  let segIdx = 0;
+  for (let i = 0; i < ROUTE_CUM_DISTS.length - 1; i++) {
+    if (targetDist <= ROUTE_CUM_DISTS[i + 1]) {
+      segIdx = i;
+      break;
+    }
+  }
+
+  const p1 = CANONICAL_ROUTE_POINTS[segIdx];
+  const p2 = CANONICAL_ROUTE_POINTS[Math.min(segIdx + 1, CANONICAL_ROUTE_POINTS.length - 1)];
+  const segStartDist = ROUTE_CUM_DISTS[segIdx];
+  const segEndDist = ROUTE_CUM_DISTS[segIdx + 1] || (segStartDist + 1);
+  const segLen = segEndDist - segStartDist;
+  const t = segLen > 0 ? (targetDist - segStartDist) / segLen : 0;
+
+  const x = p1.x + t * (p2.x - p1.x);
+  const y = p1.y + t * (p2.y - p1.y);
+
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+  return { x, y, angleDeg, segIdx };
+}
+
 export default function Logistics() {
   const { t } = useLanguage();
   const { orders } = useKrishi();
@@ -19,28 +94,52 @@ export default function Logistics() {
   const [truckProgress, setTruckProgress] = useState(58);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Simulated real-time GPS telemetry tick
+  // Simulated real-time GPS telemetry tick along the canonical polyline
   useEffect(() => {
     if (!isSimulating) return;
     const interval = setInterval(() => {
       setTruckProgress((prev) => {
-        if (prev >= 98) return 10;
-        return Number((prev + 0.3).toFixed(1));
+        if (prev >= 98) return 5;
+        return Number((prev + 0.4).toFixed(1));
       });
-    }, 1800);
+    }, 1000);
     return () => clearInterval(interval);
   }, [isSimulating]);
 
-  // Coordinates along West Bengal Agricultural Corridor (Bardhaman -> Durgapur -> Asansol -> Kolkata)
+  // Derived truck position along the canonical polyline (viewBox 0 0 800 360)
+  const truckTransform = useMemo(() => getTruckTransform(truckProgress), [truckProgress]);
+  const truckLeftPct = (truckTransform.x / 800) * 100;
+  const truckTopPct = (truckTransform.y / 360) * 100;
+
+  // Mock telemetry values dynamically aligned with the canonical route
+  const totalKm = 101.4;
+  const remainingKm = Math.max(0, (totalKm * (1 - truckProgress / 100))).toFixed(1);
+  const mockSpeed = Math.round(48 + Math.sin(truckProgress * 0.15) * 3);
+
+  // Dynamic corridor detection
+  let corridorName = 'NH-19 Durgapur Expwy (S 165°)';
+  if (truckProgress < 24) {
+    corridorName = 'GT Road Corridor (SE 115°)';
+  } else if (truckProgress > 72) {
+    corridorName = 'Belghoria Expwy AH-1 (E 95°)';
+  }
+
+  // Dynamic ETA calculation
+  const etaMinutes = Math.round((Number(remainingKm) / 48) * 60);
+  const arrivalTimeStr = etaMinutes <= 3 ? 'Arriving' : `${Math.floor(etaMinutes / 60)}h ${etaMinutes % 60}m`;
+
+  // Waypoint progress percentages along the canonical polyline
+  const memariProgress = (ROUTE_CUM_DISTS[5] / ROUTE_TOTAL_LEN) * 100;
+  const dankuniProgress = (ROUTE_CUM_DISTS[14] / ROUTE_TOTAL_LEN) * 100;
+
   const routeWaypoints = [
-    { name: 'Bardhaman Farmer Hub', lat: 23.2324, lng: 87.8615, time: '09:30 AM', passed: true, temp: '4.2°C' },
-    { name: 'Memari Cold Storage Checkpoint', lat: 23.1800, lng: 88.1100, time: '11:15 AM', passed: true, temp: '4.0°C' },
-    { name: 'Dankuni Highway Weighbridge', lat: 22.6800, lng: 88.2900, time: '01:45 PM', passed: true, temp: '4.1°C' },
-    { name: 'Kolkata Institutional Terminal (APMC)', lat: 22.5726, lng: 88.3639, time: 'ETA 03:40 PM', passed: false, temp: 'Expected' },
+    { name: 'Bardhaman Farmer Hub', time: '09:30 AM', passed: true, temp: '4.2°C' },
+    { name: 'Memari Cold Storage Checkpoint', time: '11:15 AM', passed: truckProgress >= memariProgress, temp: '4.0°C' },
+    { name: 'Dankuni Highway Weighbridge', time: '01:45 PM', passed: truckProgress >= dankuniProgress, temp: '4.1°C' },
+    { name: 'Kolkata Institutional Terminal (APMC)', time: `ETA ${arrivalTimeStr}`, passed: truckProgress >= 98, temp: 'Expected' },
   ];
 
   // Dynamic Google Maps embed target based on map mode
-  // saddr=Bardhaman & daddr=Kolkata ensures highway route is focused
   const mapTypeParam = mapMode === 'satellite' ? 'k' : 'm';
   const embedUrl = `https://maps.google.com/maps?saddr=Bardhaman,+West+Bengal&daddr=Kolkata,+West+Bengal&t=${mapTypeParam}&z=10&output=embed`;
 
@@ -217,7 +316,7 @@ export default function Logistics() {
                 />
               )}
 
-              {/* Highway NH-19 Corridor Vector Overlay from Bardhaman (NW) to Kolkata (SE) */}
+              {/* Canonical Highway NH-19 Corridor Vector Overlay from Bardhaman through Memari, Jamalpur, Dankuni to Kolkata */}
               <svg className="map-route-svg pointer-events-none" viewBox="0 0 800 360" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="1">
@@ -229,70 +328,88 @@ export default function Logistics() {
                     <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#000000" floodOpacity="0.6" />
                   </filter>
                 </defs>
-                {/* Outer route shadow */}
+                {/* Outer route shadow along canonical route */}
                 <path
-                  d="M 80 70 Q 280 130 520 210 T 720 290"
+                  d={CANONICAL_PATH_D}
                   fill="none"
                   stroke="rgba(15, 23, 42, 0.75)"
-                  strokeWidth="10"
+                  strokeWidth="9"
                   strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-                {/* Active highway corridor path */}
+                {/* Active canonical highway corridor path - matches the Google highway route */}
                 <path
-                  d="M 80 70 Q 280 130 520 210 T 720 290"
+                  d={CANONICAL_PATH_D}
                   fill="none"
                   stroke="url(#routeGrad)"
-                  strokeWidth="5"
+                  strokeWidth="4.5"
                   strokeLinecap="round"
-                  strokeDasharray="8 5"
+                  strokeLinejoin="round"
+                  strokeDasharray="8 6"
                   className="route-pulse-line"
                 />
-                {/* Waypoints: Bardhaman -> Memari -> Dankuni -> Kolkata */}
-                <circle cx="80" cy="70" r="8" fill="#22c55e" stroke="#ffffff" strokeWidth="2.5" />
-                <circle cx="280" cy="130" r="6" fill="#38bdf8" stroke="#ffffff" strokeWidth="2" />
-                <circle cx="520" cy="210" r="6" fill="#38bdf8" stroke="#ffffff" strokeWidth="2" />
-                <circle cx="720" cy="290" r="10" fill="#ef4444" stroke="#ffffff" strokeWidth="2.5" />
+                {/* Canonical Waypoint Pins: Exactly on the Highway Route Polyline */}
+                {/* 1. Bardhaman Hub */}
+                <circle cx={CANONICAL_ROUTE_POINTS[0].x} cy={CANONICAL_ROUTE_POINTS[0].y} r="8" fill="#22c55e" stroke="#ffffff" strokeWidth="2.5" />
+                {/* 2. Memari Checkpoint */}
+                <circle cx={CANONICAL_ROUTE_POINTS[5].x} cy={CANONICAL_ROUTE_POINTS[5].y} r="7" fill="#38bdf8" stroke="#ffffff" strokeWidth="2.5" />
+                {/* 3. Dankuni Weighbridge */}
+                <circle cx={CANONICAL_ROUTE_POINTS[14].x} cy={CANONICAL_ROUTE_POINTS[14].y} r="7" fill="#38bdf8" stroke="#ffffff" strokeWidth="2.5" />
+                {/* 4. Kolkata Terminal */}
+                <circle cx={CANONICAL_ROUTE_POINTS[20].x} cy={CANONICAL_ROUTE_POINTS[20].y} r="9" fill="#ef4444" stroke="#ffffff" strokeWidth="2.5" />
 
-                {/* Waypoint Text Labels */}
-                <text x="80" y="46" fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" filter="url(#routeGlow)">
+                {/* Waypoint Text Labels positioned along canonical highway coordinates */}
+                <text x={CANONICAL_ROUTE_POINTS[0].x} y={CANONICAL_ROUTE_POINTS[0].y - 18} fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" filter="url(#routeGlow)">
                   Bardhaman (Origin)
                 </text>
-                <text x="720" y="324" fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" filter="url(#routeGlow)">
+                <text x={CANONICAL_ROUTE_POINTS[5].x} y={CANONICAL_ROUTE_POINTS[5].y - 14} fill="#ffffff" fontSize="10.5" fontWeight="700" textAnchor="middle" filter="url(#routeGlow)">
+                  Memari Checkpoint
+                </text>
+                <text x={CANONICAL_ROUTE_POINTS[14].x - 10} y={CANONICAL_ROUTE_POINTS[14].y + 22} fill="#ffffff" fontSize="10.5" fontWeight="700" textAnchor="middle" filter="url(#routeGlow)">
+                  Dankuni Weighbridge
+                </text>
+                <text x={CANONICAL_ROUTE_POINTS[20].x} y={CANONICAL_ROUTE_POINTS[20].y + 24} fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" filter="url(#routeGlow)">
                   Kolkata (Terminal)
                 </text>
               </svg>
 
-              {/* Dynamic Moving Truck Pin traveling forward along NH-19 towards Kolkata */}
+              {/* Dynamic Moving Truck Pin traveling sequentially along the canonical Google highway route */}
               <div
                 className="live-truck-marker"
                 style={{
-                  left: `${10 + (truckProgress * 0.74)}%`,
-                  top: `${16 + (truckProgress * 0.60)}%`,
+                  left: `${truckLeftPct}%`,
+                  top: `${truckTopPct}%`,
                 }}
               >
                 <div className="radar-ripple" />
-                <div className="truck-bubble" style={{ transform: 'rotate(28deg)' }}>
+                <div
+                  className="truck-bubble"
+                  style={{
+                    transform: `rotate(${Math.round(truckTransform.angleDeg)}deg)`,
+                    transition: 'transform 0.4s ease'
+                  }}
+                >
                   <Truck size={18} />
                 </div>
                 <div className="truck-tag">
                   <strong>WB-39-E-9042</strong>
-                  <span>48 km/h • 4.1°C</span>
+                  <span>{mockSpeed} km/h • 4.1°C</span>
                 </div>
               </div>
 
-              {/* Map Floating HUD Overlay */}
+              {/* Map Floating HUD Overlay with Real-time Simulated Metrics */}
               <div className="map-hud-box">
                 <div className="hud-metric">
                   <Compass size={14} className="text-emerald-400" />
-                  <span>Corridor: <strong>NH-19 (SE 142°)</strong></span>
+                  <span>Corridor: <strong>{corridorName}</strong></span>
                 </div>
                 <div className="hud-metric">
                   <Navigation size={14} className="text-emerald-400" />
-                  <span>Remaining: <strong>18.4 km</strong></span>
+                  <span>Remaining: <strong>{remainingKm} km</strong></span>
                 </div>
                 <div className="hud-metric">
                   <Clock size={14} className="text-emerald-400" />
-                  <span>Est Arrival: <strong>15:40 IST</strong></span>
+                  <span>Est Arrival: <strong>{arrivalTimeStr} (15:40 IST)</strong></span>
                 </div>
               </div>
             </div>
@@ -323,7 +440,7 @@ export default function Logistics() {
                 <Zap size={18} className="text-amber-500" />
                 <span className="sensor-label">{t('vehicleSpeed', 'Vehicle Speed')}</span>
               </div>
-              <span className="sensor-val">48 km/h</span>
+              <span className="sensor-val">{mockSpeed} km/h</span>
               <span className="sensor-sub">Highway cruising speed</span>
             </div>
 
@@ -338,7 +455,7 @@ export default function Logistics() {
           </div>
 
           {/* Waypoints Route Progress Track */}
-          <div className="route-progress-box mt-6">
+          <div className="route-progress-box">
             <h4>{t('routeStopsTitle', 'Route Stops & Waypoints')}</h4>
             <div className="waypoints-track">
               {routeWaypoints.map((stop, index) => {

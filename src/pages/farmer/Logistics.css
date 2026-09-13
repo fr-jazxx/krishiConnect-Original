@@ -455,62 +455,83 @@
 .sensors-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 16px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .sensor-box {
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 14px;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.sensor-box:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .sensor-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 .sensor-label {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #475569;
 }
 
 .sensor-val {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: #0f172a;
   display: block;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
 }
 
 .sensor-sub {
   display: block;
-  font-size: 11px;
+  font-size: 11.5px;
   color: #64748b;
-  margin-top: 2px;
+  line-height: 1.35;
 }
 
 /* Waypoints Track */
 .route-progress-box {
-  background: #f8fafc;
+  background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 24px 28px 28px 28px;
+  margin-top: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .route-progress-box h4 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 16px;
+  margin: 0 0 28px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .waypoints-track {
   display: flex;
   justify-content: space-between;
   position: relative;
+  padding: 0 8px;
 }
 
 .waypoint-item {
@@ -523,49 +544,56 @@
 }
 
 .waypoint-node {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   background: #ffffff;
-  border: 2px solid #cbd5e1;
+  border: 2.5px solid #cbd5e1;
   color: #64748b;
   z-index: 2;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 4px #ffffff;
 }
 
 .waypoint-node--passed {
   background: #246b45;
   border-color: #246b45;
   color: #ffffff;
+  box-shadow: 0 0 0 4px #ffffff, 0 2px 8px rgba(36, 107, 69, 0.25);
 }
 
 .waypoint-info {
-  max-width: 140px;
+  max-width: 175px;
+  padding: 0 6px;
 }
 
 .waypoint-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #1e293b;
+  line-height: 1.35;
+  margin-bottom: 4px;
 }
 
 .waypoint-status {
-  font-size: 11px;
+  font-size: 11.5px;
   color: #64748b;
+  font-weight: 500;
   margin-top: 2px;
 }
 
 .waypoint-connector {
   position: absolute;
-  top: 16px;
+  top: 18px;
   left: 50%;
   width: 100%;
-  height: 2px;
+  height: 3px;
   background: #e2e8f0;
   z-index: 1;
 }

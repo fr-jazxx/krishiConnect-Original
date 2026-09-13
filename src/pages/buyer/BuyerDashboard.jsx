@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   ShoppingBag, ShieldCheck, TrendingUp, Truck, CheckCircle2,
   Filter, Search, ArrowRight, Clock, Award, Building2, X,
-  Camera, Sparkles, MapPin, Send, Eye, Percent
+  Camera, Sparkles, MapPin, Send, Eye, Percent, ChevronDown
 } from 'lucide-react';
 import CropImage from '../../components/common/CropImage';
 import { marketBoard, adminStats } from '../../data/mockData';
@@ -178,51 +178,105 @@ export default function BuyerDashboard() {
       </div>
 
       {/* Price Comparison Benchmark Tool */}
-      <div className="price-comparison-widget p-4 rounded-xl bg-emerald-50/60 border border-emerald-200">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center gap-2">
-            <Percent size={18} className="text-emerald-700" />
-            <h4 className="font-bold text-slate-800 m-0">Comparative Procurement Price Analysis (Mandi vs Direct Farm)</h4>
+      <div className="price-comparison-widget">
+        <div className="price-comparison-header">
+          <div className="price-comparison-title-wrap">
+            <div className="price-comparison-icon-wrap">
+              <Percent size={18} />
+            </div>
+            <div>
+              <h4 className="price-comparison-title">Comparative Procurement Price Analysis (Mandi vs Direct Farm)</h4>
+              <span className="price-comparison-subtitle">Verified real-time rate differentials across major agricultural hubs</span>
+            </div>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full">
+          <span className="price-comparison-badge">
             Average 14.2% Buyer Cost Savings
           </span>
         </div>
-        <div className="grid grid-cols-4 gap-3 text-sm">
-          <div className="p-3 bg-white rounded-lg border border-slate-200">
-            <span className="text-xs text-muted block">Tomato (Grade A)</span>
-            <div className="flex justify-between items-baseline mt-1">
-              <strong className="text-emerald-700">Direct: ₹29/kg</strong>
-              <span className="text-xs line-through text-slate-400">Mandi: ₹33</span>
+
+        <div className="comparison-commodity-grid">
+          <div className="commodity-compare-card">
+            <div className="commodity-compare-top">
+              <span className="commodity-name">Tomato</span>
+              <span className="commodity-grade">Grade A</span>
             </div>
-            <span className="text-[11px] text-emerald-600 font-bold">Save 12.1% direct</span>
+            <div className="commodity-rates-row">
+              <div className="direct-rate-box">
+                <span className="rate-caption">Direct Farm</span>
+                <strong className="rate-val">₹29<span className="rate-unit">/kg</span></strong>
+              </div>
+              <div className="mandi-rate-box">
+                <span className="rate-caption">APMC Mandi</span>
+                <span className="mandi-val">₹33/kg</span>
+              </div>
+            </div>
+            <div className="commodity-savings-pill">
+              <span className="savings-dot" />
+              <span>Save 12.1% direct</span>
+            </div>
           </div>
 
-          <div className="p-3 bg-white rounded-lg border border-slate-200">
-            <span className="text-xs text-muted block">Paddy / Rice (Swarna)</span>
-            <div className="flex justify-between items-baseline mt-1">
-              <strong className="text-emerald-700">Direct: ₹27/kg</strong>
-              <span className="text-xs line-through text-slate-400">Mandi: ₹31</span>
+          <div className="commodity-compare-card">
+            <div className="commodity-compare-top">
+              <span className="commodity-name">Paddy / Rice</span>
+              <span className="commodity-grade">Swarna</span>
             </div>
-            <span className="text-[11px] text-emerald-600 font-bold">Save 12.9% direct</span>
+            <div className="commodity-rates-row">
+              <div className="direct-rate-box">
+                <span className="rate-caption">Direct Farm</span>
+                <strong className="rate-val">₹27<span className="rate-unit">/kg</span></strong>
+              </div>
+              <div className="mandi-rate-box">
+                <span className="rate-caption">APMC Mandi</span>
+                <span className="mandi-val">₹31/kg</span>
+              </div>
+            </div>
+            <div className="commodity-savings-pill">
+              <span className="savings-dot" />
+              <span>Save 12.9% direct</span>
+            </div>
           </div>
 
-          <div className="p-3 bg-white rounded-lg border border-slate-200">
-            <span className="text-xs text-muted block">Onion (Nasik Hybrid)</span>
-            <div className="flex justify-between items-baseline mt-1">
-              <strong className="text-emerald-700">Direct: ₹32/kg</strong>
-              <span className="text-xs line-through text-slate-400">Mandi: ₹38</span>
+          <div className="commodity-compare-card">
+            <div className="commodity-compare-top">
+              <span className="commodity-name">Onion</span>
+              <span className="commodity-grade">Nasik Hybrid</span>
             </div>
-            <span className="text-[11px] text-emerald-600 font-bold">Save 15.8% direct</span>
+            <div className="commodity-rates-row">
+              <div className="direct-rate-box">
+                <span className="rate-caption">Direct Farm</span>
+                <strong className="rate-val">₹32<span className="rate-unit">/kg</span></strong>
+              </div>
+              <div className="mandi-rate-box">
+                <span className="rate-caption">APMC Mandi</span>
+                <span className="mandi-val">₹38/kg</span>
+              </div>
+            </div>
+            <div className="commodity-savings-pill">
+              <span className="savings-dot" />
+              <span>Save 15.8% direct</span>
+            </div>
           </div>
 
-          <div className="p-3 bg-white rounded-lg border border-slate-200">
-            <span className="text-xs text-muted block">Wheat (Sharbati)</span>
-            <div className="flex justify-between items-baseline mt-1">
-              <strong className="text-emerald-700">Direct: ₹28/kg</strong>
-              <span className="text-xs line-through text-slate-400">Mandi: ₹34</span>
+          <div className="commodity-compare-card">
+            <div className="commodity-compare-top">
+              <span className="commodity-name">Wheat</span>
+              <span className="commodity-grade">Sharbati</span>
             </div>
-            <span className="text-[11px] text-emerald-600 font-bold">Save 17.6% direct</span>
+            <div className="commodity-rates-row">
+              <div className="direct-rate-box">
+                <span className="rate-caption">Direct Farm</span>
+                <strong className="rate-val">₹28<span className="rate-unit">/kg</span></strong>
+              </div>
+              <div className="mandi-rate-box">
+                <span className="rate-caption">APMC Mandi</span>
+                <span className="mandi-val">₹34/kg</span>
+              </div>
+            </div>
+            <div className="commodity-savings-pill">
+              <span className="savings-dot" />
+              <span>Save 17.6% direct</span>
+            </div>
           </div>
         </div>
       </div>
@@ -235,21 +289,31 @@ export default function BuyerDashboard() {
             <p>Direct institutional purchase with price lock, sample request, and scheduled refrigerated transport</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="sourcing-toolbar__actions">
             {/* Live Search Bar */}
-            <div className="relative flex items-center">
-              <Search size={16} className="absolute left-3 text-slate-400" />
+            <div className="sourcing-search-wrapper">
+              <Search size={16} className="sourcing-search-icon" />
               <input
                 type="text"
                 placeholder="Search crop, seller, or location..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:border-emerald-600 w-64"
+                className="sourcing-search-input"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="sourcing-search-clear"
+                  title="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
 
-            <Link to="/buyer/tracking" className="btn btn-secondary text-sm flex items-center gap-1.5 py-2">
-              <Truck size={16} className="text-emerald-700" />
+            <Link to="/buyer/tracking" className="btn-track-delivery">
+              <Truck size={16} className="truck-icon" />
               <span>Track Live Delivery</span>
             </Link>
           </div>
@@ -434,41 +498,54 @@ export default function BuyerDashboard() {
                 <p className="text-sm text-slate-600">The farmer has been notified to send {sampleData.quantity} of {selectedBatch.crop} for quality lab analysis.</p>
               </div>
             ) : (
-              <form onSubmit={handleConfirmSample} className="modal-form">
-                <div className="form-group mb-3">
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Select Sample Quantity</label>
-                  <select
-                    className="w-full p-2.5 rounded-lg border border-slate-300 text-sm"
-                    value={sampleData.quantity}
-                    onChange={(e) => setSampleData({ ...sampleData, quantity: e.target.value })}
-                  >
-                    <option value="1 kg">1 kg (Quick Visual Inspection)</option>
-                    <option value="2 kg">2 kg (Recommended for Laboratory Moisture/Brix Testing)</option>
-                    <option value="5 kg">5 kg (Culinary & Shelf-Life Assessment)</option>
-                  </select>
+              <form onSubmit={handleConfirmSample} className="sample-modal-form">
+                <div className="modal-form-group">
+                  <label className="modal-form-label">
+                    <span>Select Sample Quantity</span>
+                    <span className="label-helper">Lab verification batch size</span>
+                  </label>
+                  <div className="select-wrapper">
+                    <select
+                      className="modal-select-field"
+                      value={sampleData.quantity}
+                      onChange={(e) => setSampleData({ ...sampleData, quantity: e.target.value })}
+                    >
+                      <option value="1 kg">1 kg (Quick Visual & Organoleptic Inspection)</option>
+                      <option value="2 kg">2 kg (Recommended for Laboratory Moisture / Brix Testing)</option>
+                      <option value="5 kg">5 kg (Culinary, Processing & Shelf-Life Assessment)</option>
+                    </select>
+                    <ChevronDown size={18} className="select-chevron-icon" />
+                  </div>
                 </div>
 
-                <div className="form-group mb-3">
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Buyer Receiving Dock / Address</label>
+                <div className="modal-form-group">
+                  <label className="modal-form-label">
+                    <span>Buyer Receiving Dock / Address</span>
+                    <span className="label-helper">Direct dispatch destination</span>
+                  </label>
                   <input
                     type="text"
-                    className="w-full p-2.5 rounded-lg border border-slate-300 text-sm"
+                    className="modal-input-field"
+                    placeholder="e.g. Plot 4B, Sector V, Salt Lake, Kolkata, WB 700091"
                     value={sampleData.address}
                     onChange={(e) => setSampleData({ ...sampleData, address: e.target.value })}
                     required
                   />
                 </div>
 
-                <div className="modal-perk mb-4">
-                  <ShieldCheck size={18} className="text-emerald-700" />
-                  <span className="text-xs">Express courier dispatch directly from {selectedBatch.location} collection center.</span>
+                <div className="modal-perk-box">
+                  <ShieldCheck size={20} className="perk-icon" />
+                  <div className="perk-text">
+                    <strong>APMC Monitored Courier Logistics</strong>
+                    <span>Express cold/ambient dispatch directly from {selectedBatch.location} collection center.</span>
+                  </div>
                 </div>
 
-                <div className="modal-actions">
-                  <button type="button" className="btn btn-secondary" onClick={() => setSampleModalOpen(false)}>
+                <div className="modal-actions-bar">
+                  <button type="button" className="btn-modal-cancel" onClick={() => setSampleModalOpen(false)}>
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btn-modal-confirm">
                     Confirm Sample Request
                   </button>
                 </div>

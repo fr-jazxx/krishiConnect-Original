@@ -139,7 +139,7 @@ export default function FarmerDashboard() {
             ₹{marketData.tomato.avgPrice} <span className="metric-unit">/ kg</span>
           </div>
           <span className="metric-sub text-success">
-            +{marketData.tomato.demandTrend} {t('metricRateSub', 'Higher than traditional middleman rate')}
+            {marketData.tomato.demandTrend?.startsWith('+') ? marketData.tomato.demandTrend : `+${marketData.tomato.demandTrend}`} {t('metricRateSub', 'Higher than traditional middleman rate')}
           </span>
         </div>
 
@@ -303,48 +303,77 @@ export default function FarmerDashboard() {
             </div>
           </div>
 
-          {/* UPCOMING FEATURE (GREYED OUT): AI Soil & Weather Crop Predictor */}
-          <div className="dashboard-card upcoming-feature-card opacity-75 grayscale-[20%] border-dashed border-2 border-slate-300 bg-slate-50/80 mt-6 relative overflow-hidden">
-            <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 bg-slate-800 text-slate-200 text-xs font-bold rounded-full z-10">
+          {/* UPCOMING FEATURE: AI Soil & Weather Crop Predictor */}
+          <div className="advisor-feature-card">
+            <div className="advisor-badge">
               <Lock size={12} />
               <span>Upcoming Feature (Beta)</span>
             </div>
 
-            <div className="p-1">
-              <div className="flex items-center gap-2 text-slate-700 mb-1">
-                <CloudSun size={20} className="text-amber-500" />
-                <h3 className="text-base font-bold m-0 text-slate-800">
+            <div className="advisor-header">
+              <div className="advisor-icon-wrap">
+                <CloudSun size={22} className="advisor-weather-icon" />
+              </div>
+              <div className="advisor-header-text">
+                <h3 className="advisor-title">
                   AI Soil & Seasonal Weather Planting Advisor
                 </h3>
+                <p className="advisor-desc">
+                  Predicts optimal high-yield crops to plant over the next 3–6 months based on regional N-P-K soil composition, monsoon rainfall forecasts, and historical APMC demand peaks.
+                </p>
               </div>
-              <p className="text-xs text-slate-500 mb-4">
-                Predicts optimal high-yield crops to plant over the next 3–6 months based on regional N-P-K soil composition, monsoon rainfall forecasts, and historical APMC demand peaks.
-              </p>
+            </div>
 
-              {/* Disabled Preview Pills */}
-              <div className="grid grid-cols-3 gap-3 pointer-events-none select-none filter blur-[0.3px]">
-                <div className="p-3 bg-white/80 rounded-lg border border-slate-200 shadow-sm text-center">
-                  <div className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1 mb-1">
-                    <Leaf size={14} className="text-emerald-600" /> Mustard (सरसों)
+            {/* Recommendations Separate Boxes */}
+            <div className="advisor-crop-grid">
+              <div className="advisor-crop-box advisor-crop-box--mustard">
+                <div className="advisor-crop-top">
+                  <div className="advisor-crop-name">
+                    <Leaf size={16} className="crop-leaf-icon" />
+                    <span>Mustard (सरसों)</span>
                   </div>
-                  <div className="text-lg font-bold text-slate-700">94% Fit</div>
-                  <div className="text-[11px] text-slate-400">High Winter Return</div>
+                  <span className="advisor-fit-badge advisor-fit-badge--emerald">94% Fit</span>
                 </div>
-
-                <div className="p-3 bg-white/80 rounded-lg border border-slate-200 shadow-sm text-center">
-                  <div className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1 mb-1">
-                    <Droplets size={14} className="text-blue-600" /> Lentils / Dal
-                  </div>
-                  <div className="text-lg font-bold text-slate-700">88% Fit</div>
-                  <div className="text-[11px] text-slate-400">Low Moisture Resilient</div>
+                <div className="advisor-progress-track">
+                  <div className="advisor-progress-bar advisor-progress-bar--emerald" style={{ width: '94%' }} />
                 </div>
+                <div className="advisor-crop-meta">
+                  <span className="advisor-meta-tag">High Winter Return</span>
+                  <span className="advisor-meta-sub">Soil Match: Optimal</span>
+                </div>
+              </div>
 
-                <div className="p-3 bg-white/80 rounded-lg border border-slate-200 shadow-sm text-center">
-                  <div className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1 mb-1">
-                    <Sprout size={14} className="text-amber-600" /> Wheat PBW-550
+              <div className="advisor-crop-box advisor-crop-box--lentils">
+                <div className="advisor-crop-top">
+                  <div className="advisor-crop-name">
+                    <Droplets size={16} className="crop-water-icon" />
+                    <span>Lentils / Dal</span>
                   </div>
-                  <div className="text-lg font-bold text-slate-700">82% Fit</div>
-                  <div className="text-[11px] text-slate-400">District Soil Optimal</div>
+                  <span className="advisor-fit-badge advisor-fit-badge--blue">88% Fit</span>
+                </div>
+                <div className="advisor-progress-track">
+                  <div className="advisor-progress-bar advisor-progress-bar--blue" style={{ width: '88%' }} />
+                </div>
+                <div className="advisor-crop-meta">
+                  <span className="advisor-meta-tag">Low Moisture Resilient</span>
+                  <span className="advisor-meta-sub">Water Conserving</span>
+                </div>
+              </div>
+
+              <div className="advisor-crop-box advisor-crop-box--wheat">
+                <div className="advisor-crop-top">
+                  <div className="advisor-crop-name">
+                    <Sprout size={16} className="crop-sprout-icon" />
+                    <span>Wheat PBW-550</span>
+                  </div>
+                  <span className="advisor-fit-badge advisor-fit-badge--amber">82% Fit</span>
+                </div>
+                <div className="advisor-progress-track">
+                  <div className="advisor-progress-bar advisor-progress-bar--amber" style={{ width: '82%' }} />
+                </div>
+                <div className="advisor-crop-meta">
+                  <span className="advisor-meta-tag">District Soil Optimal</span>
+                  <span className="advisor-meta-sub">High Kernel Density</span>
                 </div>
               </div>
             </div>

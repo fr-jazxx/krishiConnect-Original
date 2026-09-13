@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Store, Search, Filter, ShieldCheck, CheckCircle2,
   ArrowRight, Truck, Building2, Eye, Camera, Send,
-  Scale, Clock, Award, X, Sparkles, Layers, ChevronRight
+  Scale, Clock, Award, X, Sparkles, Layers, ChevronRight, ChevronDown
 } from 'lucide-react';
 import CropImage from '../../components/common/CropImage';
 import { useKrishi } from '../../context/KrishiContext';
@@ -474,45 +474,62 @@ export default function WholesaleMarket() {
             ) : (
               <form onSubmit={handleConfirmBid} className="modal-body">
                 <div className="lot-summary-box mb-4">
-                  <div className="flex justify-between items-center mb-1">
-                    <strong>{selectedLot.crop} ({selectedLot.variety})</strong>
-                    <span className="text-emerald-700 font-bold">Grade {selectedLot.grade}</span>
+                  <div className="lot-summary-header">
+                    <strong className="lot-crop-title">{selectedLot.crop} ({selectedLot.variety})</strong>
+                    <span className="lot-grade-badge">Grade {selectedLot.grade}</span>
                   </div>
-                  <div className="text-xs text-slate-600">
-                    Seller: {selectedLot.seller} • Listed: ₹{selectedLot.price}/kg • MOQ: {selectedLot.moq} kg
+                  <div className="lot-meta-text">
+                    <span>Seller: <strong>{selectedLot.seller}</strong></span>
+                    <span className="meta-dot">•</span>
+                    <span>Listed: <strong>₹{selectedLot.price}/kg</strong></span>
+                    <span className="meta-dot">•</span>
+                    <span>MOQ: <strong>{selectedLot.moq} kg</strong></span>
                   </div>
                 </div>
 
                 <div className="form-grid-2 mb-3">
                   <div className="form-group">
                     <label className="form-label">Offered Wholesale Rate (₹/kg)</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      required
-                      value={bidForm.bidPrice}
-                      onChange={(e) => setBidForm({ ...bidForm, bidPrice: e.target.value })}
-                      className="form-control"
-                    />
+                    <div className="input-with-affix">
+                      <span className="input-prefix">₹</span>
+                      <input
+                        type="number"
+                        step="0.1"
+                        required
+                        value={bidForm.bidPrice}
+                        onChange={(e) => setBidForm({ ...bidForm, bidPrice: e.target.value })}
+                        className="form-control input-has-prefix input-has-suffix"
+                      />
+                      <span className="input-suffix">/ kg</span>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Order Volume (kg, Min {selectedLot.moq})</label>
-                    <input
-                      type="number"
-                      min={selectedLot.moq}
-                      max={selectedLot.quantity}
-                      required
-                      value={bidForm.quantity}
-                      onChange={(e) => setBidForm({ ...bidForm, quantity: e.target.value })}
-                      className="form-control"
-                    />
+                    <div className="input-with-affix">
+                      <input
+                        type="number"
+                        min={selectedLot.moq}
+                        max={selectedLot.quantity}
+                        required
+                        value={bidForm.quantity}
+                        onChange={(e) => setBidForm({ ...bidForm, quantity: e.target.value })}
+                        className="form-control input-has-suffix"
+                      />
+                      <span className="input-suffix">kg</span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="form-group mb-4">
                   <label className="form-label">Escrow Settlement Security</label>
-                  <div className="p-2.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-600">
-                    Total Contract Escrow Lock: <strong>₹{((Number(bidForm.bidPrice) || 0) * (Number(bidForm.quantity) || 0)).toLocaleString('en-IN')}</strong>. Funds are frozen in bank escrow until truck digital weighment is confirmed.
+                  <div className="escrow-security-callout">
+                    <ShieldCheck size={20} className="escrow-shield-icon" />
+                    <div className="escrow-security-text">
+                      <div className="escrow-lock-title">
+                        Total Contract Escrow Lock: <strong className="escrow-lock-amount">₹{((Number(bidForm.bidPrice) || 0) * (Number(bidForm.quantity) || 0)).toLocaleString('en-IN')}</strong>
+                      </div>
+                      <span className="escrow-security-sub">Funds are frozen in bank escrow until truck digital weighment is confirmed.</span>
+                    </div>
                   </div>
                 </div>
 
@@ -555,25 +572,41 @@ export default function WholesaleMarket() {
             ) : (
               <form onSubmit={handleConfirmSample} className="modal-body">
                 <div className="lot-summary-box mb-4">
-                  <strong>{selectedLot.crop} Grade {selectedLot.grade}</strong>
-                  <p className="text-xs text-slate-600 mt-0.5">Origin: {selectedLot.seller} ({selectedLot.location})</p>
+                  <div className="lot-summary-header">
+                    <strong className="lot-crop-title">{selectedLot.crop}</strong>
+                    <span className="lot-grade-badge">Grade {selectedLot.grade}</span>
+                  </div>
+                  <p className="lot-meta-text">Origin: <strong>{selectedLot.seller}</strong> ({selectedLot.location})</p>
                 </div>
 
                 <div className="form-group mb-3">
-                  <label className="form-label">Sample Size</label>
-                  <input
-                    type="text"
-                    value={sampleForm.quantity}
-                    onChange={(e) => setSampleForm({ ...sampleForm, quantity: e.target.value })}
-                    className="form-control"
-                    required
-                  />
+                  <label className="form-label">
+                    <span>Sample Size</span>
+                    <span className="label-helper">Lab verification batch size</span>
+                  </label>
+                  <div className="select-wrapper">
+                    <select
+                      value={sampleForm.quantity}
+                      onChange={(e) => setSampleForm({ ...sampleForm, quantity: e.target.value })}
+                      className="form-control modal-select-field"
+                      required
+                    >
+                      <option value="1 kg">1 kg (Quick Visual & Moisture Testing)</option>
+                      <option value="2 kg">2 kg (Recommended for Laboratory Brix / Purity Scan)</option>
+                      <option value="5 kg">5 kg (Culinary, Milling & Shelf-Life Assessment)</option>
+                    </select>
+                    <ChevronDown size={18} className="select-chevron-icon" />
+                  </div>
                 </div>
 
                 <div className="form-group mb-3">
-                  <label className="form-label">Lab Delivery Address</label>
+                  <label className="form-label">
+                    <span>Lab Delivery Address</span>
+                    <span className="label-helper">Destination warehouse or testing lab</span>
+                  </label>
                   <textarea
-                    rows={2}
+                    rows={3}
+                    placeholder="e.g. FreshMart Regional Distribution Center, Plot 4B, Sector V, Salt Lake, Kolkata, WB"
                     value={sampleForm.address}
                     onChange={(e) => setSampleForm({ ...sampleForm, address: e.target.value })}
                     className="form-control"

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import CropImage from '../../components/common/CropImage';
 import { buyerOffer, logisticsRoutes } from '../../data/mockData';
+import './BuyerOrders.css';
 
 export default function BuyerOrders() {
   const [escrowReleased, setEscrowReleased] = useState(false);
@@ -25,83 +26,122 @@ export default function BuyerOrders() {
       </div>
 
       {/* Primary Active Contract Spotlight */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm mb-6">
-        <div className="flex justify-between items-start flex-wrap gap-4 pb-4 border-b border-slate-100">
-          <div className="flex items-center gap-4">
-            <CropImage crop="Tomato" size={48} />
+      <div className="contract-spotlight-card">
+        {/* Header */}
+        <div className="contract-header">
+          <div className="contract-header__left">
+            <CropImage crop="Tomato" size={52} />
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold text-slate-800">Contract #KC-TOM-9842</h3>
-                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">
-                  In Transit (Cold-Chain)
+              <div className="contract-title-row">
+                <h3 className="contract-title">Contract #KC-TOM-9842</h3>
+                <span className="contract-status-badge">
+                  <span className="badge-dot" /> In Transit (Cold-Chain)
                 </span>
               </div>
-              <p className="text-sm text-slate-500">
-                Seller: Ramesh Kumar (Bardhaman Hub) • Escrow Locked: ₹27,910
+              <p className="contract-meta">
+                <span>Seller: <strong>Ramesh Kumar</strong> (Bardhaman Hub)</span>
+                <span className="contract-meta-dot">•</span>
+                <span>Escrow Locked: <span className="contract-escrow-pill">₹27,910</span></span>
               </p>
             </div>
           </div>
 
-          <Link to="/logistics" className="btn btn-secondary flex items-center gap-2">
+          <Link to="/logistics" className="contract-track-btn">
             <Truck size={16} />
             <span>Track Delivery Truck (PB-10-CZ-4412)</span>
           </Link>
         </div>
 
-        {/* Milestone Steps */}
-        <div className="grid grid-cols-4 gap-4 my-6 text-center">
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <CheckCircle2 size={20} className="text-emerald-600 mx-auto mb-1" />
-            <span className="text-xs font-bold text-emerald-800 block">Contract Locked</span>
-            <span className="text-[11px] text-slate-500">09:15 AM · Fixed ₹29/kg</span>
-          </div>
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <CheckCircle2 size={20} className="text-emerald-600 mx-auto mb-1" />
-            <span className="text-xs font-bold text-emerald-800 block">Farm Weighment</span>
-            <span className="text-[11px] text-slate-500">11:30 AM · 1,000 kg Digital</span>
-          </div>
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <Truck size={20} className="text-blue-600 mx-auto mb-1" />
-            <span className="text-xs font-bold text-blue-800 block">In Transit</span>
-            <span className="text-[11px] text-slate-500">ETA 15:40 · Temp 4.1°C</span>
-          </div>
-          <div className={`p-3 rounded-lg border ${escrowReleased ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-200'}`}>
-            <DollarSign size={20} className={`${escrowReleased ? 'text-emerald-600' : 'text-slate-400'} mx-auto mb-1`} />
-            <span className={`text-xs font-bold block ${escrowReleased ? 'text-emerald-800' : 'text-slate-600'}`}>
-              {escrowReleased ? 'Escrow Released' : 'Dock Inspection'}
-            </span>
-            <span className="text-[11px] text-slate-500">
-              {escrowReleased ? 'Settled to Bank' : 'Pending Gate Scan'}
-            </span>
+        {/* Milestone Steps: 4 Separate Styled Stage Boxes */}
+        <div className="milestones-container">
+          <div className="milestones-grid">
+            {/* Step 1: Contract Locked */}
+            <div className="milestone-box milestone-box--completed">
+              <div className="milestone-icon-wrap milestone-icon-wrap--completed">
+                <CheckCircle2 size={20} />
+              </div>
+              <span className="milestone-label">Contract Locked</span>
+              <div className="milestone-badge-row">
+                <span className="milestone-time">09:15 AM</span>
+                <span className="milestone-sub">Fixed ₹29/kg</span>
+              </div>
+            </div>
+
+            {/* Step 2: Farm Weighment */}
+            <div className="milestone-box milestone-box--completed">
+              <div className="milestone-icon-wrap milestone-icon-wrap--completed">
+                <CheckCircle2 size={20} />
+              </div>
+              <span className="milestone-label">Farm Weighment</span>
+              <div className="milestone-badge-row">
+                <span className="milestone-time">11:30 AM</span>
+                <span className="milestone-sub">1,000 kg Digital</span>
+              </div>
+            </div>
+
+            {/* Step 3: In Transit */}
+            <div className="milestone-box milestone-box--active">
+              <div className="milestone-icon-wrap milestone-icon-wrap--active">
+                <Truck size={20} />
+              </div>
+              <span className="milestone-label">In Transit</span>
+              <div className="milestone-badge-row">
+                <span className="milestone-time">ETA 15:40</span>
+                <span className="milestone-sub">Temp 4.1°C</span>
+              </div>
+            </div>
+
+            {/* Step 4: Dock Inspection / Settlement */}
+            <div className={`milestone-box ${escrowReleased ? 'milestone-box--completed' : 'milestone-box--pending'}`}>
+              <div className={`milestone-icon-wrap ${escrowReleased ? 'milestone-icon-wrap--completed' : 'milestone-icon-wrap--pending'}`}>
+                <DollarSign size={20} />
+              </div>
+              <span className="milestone-label">
+                {escrowReleased ? 'Escrow Released' : 'Dock Inspection'}
+              </span>
+              <div className="milestone-badge-row">
+                <span className="milestone-time">
+                  {escrowReleased ? 'Settled' : 'Gate Scan'}
+                </span>
+                <span className="milestone-sub">
+                  {escrowReleased ? 'Transferred to Bank' : 'Pending Gate Scan'}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Action Panel */}
-        <div className="bg-slate-50 p-4 rounded-lg flex justify-between items-center flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <ShieldCheck size={22} className="text-emerald-600" />
-            <div className="text-sm">
-              <strong className="text-slate-800 block">IoT Cold-Chain Quality Telemetry: Passed</strong>
-              <span className="text-slate-500 text-xs">No temperature deviations during 42.6 km journey. AGMARK Grade A certified.</span>
+        {/* Action Panel & Cold-Chain Telemetry */}
+        <div className="contract-footer-strip">
+          <div className="telemetry-info">
+            <ShieldCheck size={26} className="telemetry-shield-icon" />
+            <div className="telemetry-text">
+              <div className="telemetry-title">
+                <span>IoT Cold-Chain Quality Telemetry:</span>
+                <span className="telemetry-status-tag">PASSED</span>
+              </div>
+              <span className="telemetry-sub">
+                No temperature deviations during 42.6 km journey. AGMARK Grade A certified.
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="contract-btn-group">
             <button
               type="button"
-              className="btn btn-secondary text-xs"
+              className="btn-slip"
               onClick={() => alert('Downloading APMC Certified Digital Invoice & Weighbridge Slip...')}
             >
-              <Download size={14} />
+              <Download size={15} />
               <span>Weighment Slip</span>
             </button>
             <button
               type="button"
               disabled={escrowReleased}
-              className={`btn ${escrowReleased ? 'btn-secondary' : 'btn-primary'} text-xs`}
+              className={`btn-escrow-action ${escrowReleased ? 'btn-escrow-action--settled' : ''}`}
               onClick={() => setEscrowReleased(true)}
             >
-              <CheckCircle2 size={14} />
+              <CheckCircle2 size={16} />
               <span>{escrowReleased ? 'Escrow Settled (Paid)' : 'Confirm Receipt & Release Escrow'}</span>
             </button>
           </div>
